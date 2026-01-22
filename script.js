@@ -9,6 +9,7 @@ const posts = [
         date: "2025-01-15",
         category: "Philosophy",
         tags: ["reflection", "growth", "time"],
+        image: "images/change.jpg",
         content: `Change is a curious thing. We often imagine it as dramatic—a sudden shift, a moment of clarity, a decision that changes everything. But more often than not, change is quiet. It's the accumulation of small choices, tiny adjustments in perspective, moments of awareness that we barely notice as they happen.
 
 I've been thinking about this lately, watching how habits form and dissolve, how relationships evolve, how our understanding of ourselves deepens over time. There's something profound in recognizing that the person we were a year ago, five years ago, is both intimately familiar and almost unrecognizable.
@@ -24,6 +25,7 @@ What changes are quietly happening in your life right now?`
         date: "2025-01-10",
         category: "Lifestyle",
         tags: ["rest", "mindfulness", "culture"],
+        image: "images/stillness.jpg",
         content: `We've forgotten how to do nothing. Not "nothing productive"—I mean actual nothing. No phone, no book, no music, no task. Just... existing.
 
 This realization hit me last Sunday when I caught myself reaching for my phone within seconds of sitting down. The discomfort was immediate. The silence felt wrong. My mind scrambled for something, anything, to occupy itself with.
@@ -39,6 +41,7 @@ Try it sometime. Sit and do absolutely nothing for ten minutes. Notice the resis
         date: "2025-01-05",
         category: "Writing",
         tags: ["writing", "healing", "introspection"],
+        image: "images/letters.jpg",
         content: `Dear younger self, dear old friend, dear person I used to be...
 
 I've been writing letters I'll never send. Not because they're angry or cruel, but because they're not really for anyone else. They're for me. A way of processing, understanding, releasing.
@@ -304,6 +307,8 @@ function displaySinglePost() {
     ).join('');
     
     postHeader.innerHTML = `
+        ${post.image ? `<img src="${post.image}" alt="${post.title}" class="post-featured-image">` : ''}
+        
         <div class="post-meta">
             <span class="post-date">
                 <i data-lucide="calendar" style="width: 14px; height: 14px;"></i>
