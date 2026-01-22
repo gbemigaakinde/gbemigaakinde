@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A minimalist personal blog">
+    <title>My Personal Blog</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="index.html" class="logo">My Blog</a>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="active">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero">
+        <div class="container">
+            <h1>Welcome to My Blog</h1>
+            <p>Thoughts, stories, and ideas</p>
+        </div>
+    </header>
+
+    <!-- Search Bar -->
+    <section class="search-section">
+        <div class="container">
+            <input 
+                type="text" 
+                id="searchInput" 
+                class="search-bar" 
+                placeholder="Search articles...">
+        </div>
+    </section>
+
+    <!-- Category Filter -->
+    <section class="categories-section">
+        <div class="container">
+            <div class="category-pills" id="categoryPills">
+                <button class="pill active" data-category="all">All</button>
+                <!-- Categories will be added dynamically by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Blog Posts Grid -->
+    <main class="posts-section">
+        <div class="container">
+            <div class="posts-grid" id="postsGrid">
+                <!-- Posts will be loaded here by JavaScript -->
+                <div class="loading">Loading posts...</div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 My Personal Blog. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
