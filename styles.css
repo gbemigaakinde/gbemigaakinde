@@ -415,6 +415,15 @@ a:hover {
     margin-bottom: 32px;
 }
 
+.post-featured-image {
+    width: 100%;
+    height: auto;
+    max-height: 500px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 24px;
+}
+
 .post-header .post-meta {
     margin-bottom: 16px;
 }
@@ -583,6 +592,11 @@ a:hover {
     
     .post-header h1 {
         font-size: 28px;
+    }
+    
+    .post-featured-image {
+        max-height: 350px;
+        border-radius: 6px;
     }
     
     .main-content {
