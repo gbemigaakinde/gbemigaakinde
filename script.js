@@ -52,49 +52,57 @@ If you wrote a letter you'd never send, who would it be to? What would you say?`
 ];
 
 // ===================================
-// THEME MANAGEMENT - FIXED
+// THEME MANAGEMENT - FULLY FIXED
 // ===================================
 
 function initTheme() {
-    // Check if user has a saved preference
+    // Check if user has manually set a preference
     const savedTheme = localStorage.getItem('theme');
     
     if (savedTheme) {
-        // Use saved preference
+        // User has manually chosen a theme - use it
         applyTheme(savedTheme);
     } else {
-        // Use system preference
+        // No manual preference - use system preference
         const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
         const theme = prefersDark ? 'dark' : 'light';
         applyTheme(theme);
     }
+    
+    // Listen for system theme changes (when user changes phone/computer theme)
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    mediaQuery.addEventListener('change', (e) => {
+        // Only auto-switch if user hasn't manually set a preference
+        if (!localStorage.getItem('theme')) {
+            const newTheme = e.matches ? 'dark' : 'light';
+            applyTheme(newTheme);
+        }
+    });
 }
 
 function applyTheme(theme) {
-    // Apply theme immediately to document
+    // Apply theme to document immediately (no reload needed)
     document.documentElement.setAttribute('data-theme', theme);
     
-    // Update icons
+    // Update toggle button icons
     updateThemeIcons(theme === 'dark');
 }
 
 function toggleTheme() {
+    // Get current theme
     const currentTheme = document.documentElement.getAttribute('data-theme');
     const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
     
-    // Apply new theme immediately (no page reload needed)
+    // Apply new theme immediately
     applyTheme(newTheme);
     
-    // Save preference to localStorage
+    // Save user's manual preference
     localStorage.setItem('theme', newTheme);
 }
 
 function updateThemeIcons(isDark) {
-    // Get all theme toggle buttons
+    // Update desktop toggle button
     const desktopToggle = document.getElementById('theme-toggle');
-    const mobileToggle = document.getElementById('mobile-theme-toggle');
-    
-    // Update icon for desktop toggle
     if (desktopToggle) {
         const icon = desktopToggle.querySelector('i');
         if (icon) {
@@ -102,7 +110,8 @@ function updateThemeIcons(isDark) {
         }
     }
     
-    // Update icon for mobile toggle
+    // Update mobile toggle button
+    const mobileToggle = document.getElementById('mobile-theme-toggle');
     if (mobileToggle) {
         const icon = mobileToggle.querySelector('i');
         if (icon) {
@@ -110,9 +119,21 @@ function updateThemeIcons(isDark) {
         }
     }
     
-    // Reinitialize Lucide icons
+    // Reinitialize Lucide icons to show changes
     if (typeof lucide !== 'undefined') {
         lucide.createIcons();
+    }
+}
+
+// ===================================
+// COPYRIGHT YEAR AUTO-UPDATE
+// ===================================
+
+function updateCopyrightYear() {
+    const copyrightElement = document.getElementById('copyright-text');
+    if (copyrightElement) {
+        const currentYear = new Date().getFullYear();
+        copyrightElement.textContent = `© ${currentYear} Your Name. All thoughts and words are my own.`;
     }
 }
 
@@ -333,44 +354,15 @@ function displaySinglePost() {
 }
 
 // ===================================
-// CONTACT FORM
-// ===================================
-
-function initContactForm() {
-    const form = document.getElementById('contact-form');
-    
-    if (!form) return;
-    
-    form.addEventListener('submit', (e) => {
-        e.preventDefault();
-        
-        // Get form data
-        const name = document.getElementById('name').value;
-        const email = document.getElementById('email').value;
-        const message = document.getElementById('message').value;
-        
-        // Show success message
-        const messageDiv = document.getElementById('form-message');
-        messageDiv.textContent = 'Message sent successfully! (This is a demo. In production, you would connect to a backend service.)';
-        messageDiv.className = 'form-message success';
-        
-        // Clear form
-        form.reset();
-        
-        // Hide message after 5 seconds
-        setTimeout(() => {
-            messageDiv.className = 'form-message hidden';
-        }, 5000);
-    });
-}
-
-// ===================================
 // INITIALIZATION
 // ===================================
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Initialize theme first
+    // Initialize theme system
     initTheme();
+    
+    // Update copyright year automatically
+    updateCopyrightYear();
     
     // Initialize Lucide icons
     if (typeof lucide !== 'undefined') {
@@ -406,8 +398,5 @@ document.addEventListener('DOMContentLoaded', () => {
     } else if (document.getElementById('post-header')) {
         // Single post page
         displaySinglePost();
-    } else if (document.getElementById('contact-form')) {
-        // Contact page
-        initContactForm();
     }
 });
