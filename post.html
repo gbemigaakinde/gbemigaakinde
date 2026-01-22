@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Blog post">
     
-    <!-- Title will be set dynamically by JavaScript -->
     <title>Blog Post - Your Name</title>
     
     <link rel="stylesheet" href="styles.css">
@@ -20,8 +19,6 @@
                 
                 <nav class="nav-desktop">
                     <a href="index.html" class="nav-link">Home</a>
-                    <a href="about.html" class="nav-link">About</a>
-                    <a href="contact.html" class="nav-link">Contact</a>
                     
                     <button id="theme-toggle" class="icon-button" aria-label="Toggle theme">
                         <i data-lucide="moon" class="icon"></i>
@@ -45,8 +42,6 @@
             
             <nav class="mobile-nav">
                 <a href="index.html" class="mobile-nav-link">Home</a>
-                <a href="about.html" class="mobile-nav-link">About</a>
-                <a href="contact.html" class="mobile-nav-link">Contact</a>
                 
                 <div class="mobile-nav-divider"></div>
                 
@@ -65,12 +60,12 @@
             <a href="index.html" class="back-link">
                 ← Back to all posts
             </a>
-            
+
             <!-- Post Header (populated by JavaScript) -->
             <div id="post-header" class="post-header">
                 <!-- Date, category, title, and tags will be inserted here -->
             </div>
-            
+
             <!-- Post Content (populated by JavaScript) -->
             <div id="post-content" class="prose">
                 <!-- Post body will be inserted here -->
@@ -81,7 +76,50 @@
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
-            <p class="footer-text">© 2025 Your Name. All thoughts and words are my own.</p>
+            <div class="footer-content">
+                <!-- About Section -->
+                <div class="footer-about">
+                    <h3 class="footer-title">About</h3>
+                    <p class="footer-text">
+                        A personal space for thoughts, reflections, and explorations. Writing helps me understand myself and the world better.
+                    </p>
+                </div>
+                
+                <!-- Contact Section -->
+                <div class="footer-contact">
+                    <h3 class="footer-title">Contact</h3>
+                    <p class="footer-text">
+                        <a href="mailto:your.email@example.com" class="footer-link">
+                            <i data-lucide="mail" style="width: 16px; height: 16px;"></i>
+                            your.email@example.com
+                        </a>
+                    </p>
+                </div>
+                
+                <!-- Social Media Links -->
+                <div class="footer-social">
+                    <h3 class="footer-title">Connect</h3>
+                    <div class="social-links">
+                        <a href="https://twitter.com/yourhandle" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="Twitter">
+                            <i data-lucide="twitter" class="social-icon"></i>
+                        </a>
+                        <a href="https://github.com/yourhandle" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="GitHub">
+                            <i data-lucide="github" class="social-icon"></i>
+                        </a>
+                        <a href="https://linkedin.com/in/yourhandle" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="LinkedIn">
+                            <i data-lucide="linkedin" class="social-icon"></i>
+                        </a>
+                        <a href="https://instagram.com/yourhandle" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="Instagram">
+                            <i data-lucide="instagram" class="social-icon"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Copyright -->
+            <div class="footer-bottom">
+                <p class="footer-copyright">© 2025 Your Name. All thoughts and words are my own.</p>
+            </div>
         </div>
     </footer>
 
