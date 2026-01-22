@@ -52,6 +52,16 @@ If you wrote a letter you'd never send, who would it be to? What would you say?`
 ];
 
 // ===================================
+// LUCIDE ICONS INITIALIZATION
+// ===================================
+
+function initLucideIcons() {
+    if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+    }
+}
+
+// ===================================
 // THEME MANAGEMENT - FULLY FIXED
 // ===================================
 
@@ -120,9 +130,7 @@ function updateThemeIcons(isDark) {
     }
     
     // Reinitialize Lucide icons to show changes
-    if (typeof lucide !== 'undefined') {
-        lucide.createIcons();
-    }
+    initLucideIcons();
 }
 
 // ===================================
@@ -221,9 +229,7 @@ function displayPosts(postsToShow = posts) {
     }).join('');
     
     // Initialize Lucide icons
-    if (typeof lucide !== 'undefined') {
-        lucide.createIcons();
-    }
+    initLucideIcons();
 }
 
 // ===================================
@@ -348,9 +354,7 @@ function displaySinglePost() {
     postContent.innerHTML = paragraphs;
     
     // Initialize Lucide icons
-    if (typeof lucide !== 'undefined') {
-        lucide.createIcons();
-    }
+    initLucideIcons();
 }
 
 // ===================================
@@ -358,16 +362,15 @@ function displaySinglePost() {
 // ===================================
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Initialize theme system
+    // Initialize theme system FIRST
     initTheme();
     
     // Update copyright year automatically
     updateCopyrightYear();
     
-    // Initialize Lucide icons
-    if (typeof lucide !== 'undefined') {
-        lucide.createIcons();
-    }
+    // CRITICAL: Initialize Lucide icons immediately on page load
+    // This ensures all icons (including theme toggle, social media, etc.) are rendered
+    initLucideIcons();
     
     // Set up theme toggle buttons
     const desktopToggle = document.getElementById('theme-toggle');
