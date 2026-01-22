@@ -1,15 +1,6 @@
 // ===================================
 // BLOG POST DATA
 // ===================================
-// Add your blog posts here. Each post needs:
-// - id: unique number
-// - title: post title
-// - excerpt: short preview text
-// - date: format YYYY-MM-DD
-// - category: one category
-// - tags: array of tags
-// - content: full post text (use \n\n for paragraphs)
-
 const posts = [
     {
         id: 1,
@@ -61,7 +52,7 @@ If you wrote a letter you'd never send, who would it be to? What would you say?`
 ];
 
 // ===================================
-// THEME MANAGEMENT
+// THEME MANAGEMENT - FIXED
 // ===================================
 
 function initTheme() {
@@ -70,29 +61,32 @@ function initTheme() {
     
     if (savedTheme) {
         // Use saved preference
-        document.documentElement.setAttribute('data-theme', savedTheme);
-        updateThemeIcons(savedTheme === 'dark');
+        applyTheme(savedTheme);
     } else {
         // Use system preference
         const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
         const theme = prefersDark ? 'dark' : 'light';
-        document.documentElement.setAttribute('data-theme', theme);
-        updateThemeIcons(prefersDark);
+        applyTheme(theme);
     }
+}
+
+function applyTheme(theme) {
+    // Apply theme immediately to document
+    document.documentElement.setAttribute('data-theme', theme);
+    
+    // Update icons
+    updateThemeIcons(theme === 'dark');
 }
 
 function toggleTheme() {
     const currentTheme = document.documentElement.getAttribute('data-theme');
     const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
     
-    // Apply new theme
-    document.documentElement.setAttribute('data-theme', newTheme);
+    // Apply new theme immediately (no page reload needed)
+    applyTheme(newTheme);
     
-    // Save preference
+    // Save preference to localStorage
     localStorage.setItem('theme', newTheme);
-    
-    // Update icons
-    updateThemeIcons(newTheme === 'dark');
 }
 
 function updateThemeIcons(isDark) {
@@ -103,13 +97,17 @@ function updateThemeIcons(isDark) {
     // Update icon for desktop toggle
     if (desktopToggle) {
         const icon = desktopToggle.querySelector('i');
-        icon.setAttribute('data-lucide', isDark ? 'sun' : 'moon');
+        if (icon) {
+            icon.setAttribute('data-lucide', isDark ? 'sun' : 'moon');
+        }
     }
     
     // Update icon for mobile toggle
     if (mobileToggle) {
         const icon = mobileToggle.querySelector('i');
-        icon.setAttribute('data-lucide', isDark ? 'sun' : 'moon');
+        if (icon) {
+            icon.setAttribute('data-lucide', isDark ? 'sun' : 'moon');
+        }
     }
     
     // Reinitialize Lucide icons
@@ -220,10 +218,8 @@ function initSearch() {
         const query = e.target.value.toLowerCase().trim();
         
         if (query === '') {
-            // Show all posts when search is empty
             displayPosts(posts);
         } else {
-            // Filter posts by title, excerpt, or content
             const filtered = posts.filter(post => 
                 post.title.toLowerCase().includes(query) ||
                 post.excerpt.toLowerCase().includes(query) ||
@@ -273,7 +269,6 @@ function initCategoryFilter() {
 // ===================================
 
 function displaySinglePost() {
-    // Check if we're on the post page
     const postHeader = document.getElementById('post-header');
     const postContent = document.getElementById('post-content');
     
@@ -374,7 +369,7 @@ function initContactForm() {
 // ===================================
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Initialize theme
+    // Initialize theme first
     initTheme();
     
     // Initialize Lucide icons
