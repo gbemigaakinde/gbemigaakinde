@@ -56,33 +56,29 @@ If you wrote a letter you'd never send, who would it be to? What would you say?`
 // ===================================
 
 function initLucideIcons() {
-    if (typeof lucide !== 'undefined') {
-        lucide.createIcons();
+    // Wait for lucide to be available, then create icons
+    if (window.lucide && window.lucide.createIcons) {
+        window.lucide.createIcons();
     }
 }
 
 // ===================================
-// THEME MANAGEMENT - FULLY FIXED
+// THEME MANAGEMENT
 // ===================================
 
 function initTheme() {
-    // Check if user has manually set a preference
     const savedTheme = localStorage.getItem('theme');
     
     if (savedTheme) {
-        // User has manually chosen a theme - use it
         applyTheme(savedTheme);
     } else {
-        // No manual preference - use system preference
         const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
         const theme = prefersDark ? 'dark' : 'light';
         applyTheme(theme);
     }
     
-    // Listen for system theme changes (when user changes phone/computer theme)
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
     mediaQuery.addEventListener('change', (e) => {
-        // Only auto-switch if user hasn't manually set a preference
         if (!localStorage.getItem('theme')) {
             const newTheme = e.matches ? 'dark' : 'light';
             applyTheme(newTheme);
@@ -91,27 +87,18 @@ function initTheme() {
 }
 
 function applyTheme(theme) {
-    // Apply theme to document immediately (no reload needed)
     document.documentElement.setAttribute('data-theme', theme);
-    
-    // Update toggle button icons
     updateThemeIcons(theme === 'dark');
 }
 
 function toggleTheme() {
-    // Get current theme
     const currentTheme = document.documentElement.getAttribute('data-theme');
     const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-    
-    // Apply new theme immediately
     applyTheme(newTheme);
-    
-    // Save user's manual preference
     localStorage.setItem('theme', newTheme);
 }
 
 function updateThemeIcons(isDark) {
-    // Update desktop toggle button
     const desktopToggle = document.getElementById('theme-toggle');
     if (desktopToggle) {
         const icon = desktopToggle.querySelector('i');
@@ -120,7 +107,6 @@ function updateThemeIcons(isDark) {
         }
     }
     
-    // Update mobile toggle button
     const mobileToggle = document.getElementById('mobile-theme-toggle');
     if (mobileToggle) {
         const icon = mobileToggle.querySelector('i');
@@ -129,7 +115,6 @@ function updateThemeIcons(isDark) {
         }
     }
     
-    // Reinitialize Lucide icons to show changes
     initLucideIcons();
 }
 
@@ -156,12 +141,10 @@ function initMobileMenu() {
     const overlay = sidebar ? sidebar.querySelector('.mobile-sidebar-overlay') : null;
     
     if (menuButton && sidebar) {
-        // Open menu
         menuButton.addEventListener('click', () => {
             sidebar.classList.add('active');
         });
         
-        // Close menu
         const closeMenu = () => {
             sidebar.classList.remove('active');
         };
@@ -228,7 +211,6 @@ function displayPosts(postsToShow = posts) {
         `;
     }).join('');
     
-    // Initialize Lucide icons
     initLucideIcons();
 }
 
@@ -269,16 +251,11 @@ function initCategoryFilter() {
     
     categoryButtons.forEach(button => {
         button.addEventListener('click', () => {
-            // Remove active class from all buttons
             categoryButtons.forEach(btn => btn.classList.remove('active'));
-            
-            // Add active class to clicked button
             button.classList.add('active');
             
-            // Get selected category
             const category = button.getAttribute('data-category');
             
-            // Filter posts
             if (category === 'all') {
                 displayPosts(posts);
             } else {
@@ -301,11 +278,8 @@ function displaySinglePost() {
     
     if (!postHeader || !postContent) return;
     
-    // Get post ID from URL
     const urlParams = new URLSearchParams(window.location.search);
     const postId = parseInt(urlParams.get('id'));
-    
-    // Find the post
     const post = posts.find(p => p.id === postId);
     
     if (!post) {
@@ -313,10 +287,8 @@ function displaySinglePost() {
         return;
     }
     
-    // Update page title
     document.title = `${post.title} - Your Name`;
     
-    // Format date
     const date = new Date(post.date);
     const formattedDate = date.toLocaleDateString('en-US', { 
         month: 'long', 
@@ -324,7 +296,6 @@ function displaySinglePost() {
         year: 'numeric' 
     });
     
-    // Create tags HTML
     const tagsHTML = post.tags.map(tag => 
         `<span class="post-tag">
             <i data-lucide="tag" style="width: 12px; height: 12px;"></i>
@@ -332,7 +303,6 @@ function displaySinglePost() {
         </span>`
     ).join('');
     
-    // Display header
     postHeader.innerHTML = `
         <div class="post-meta">
             <span class="post-date">
@@ -349,11 +319,9 @@ function displaySinglePost() {
         </div>
     `;
     
-    // Display content (convert \n\n to paragraphs)
     const paragraphs = post.content.split('\n\n').map(p => `<p>${p}</p>`).join('');
     postContent.innerHTML = paragraphs;
     
-    // Initialize Lucide icons
     initLucideIcons();
 }
 
@@ -361,18 +329,21 @@ function displaySinglePost() {
 // INITIALIZATION
 // ===================================
 
+// Wait for both DOM and Lucide library to be ready
+window.addEventListener('load', () => {
+    // Give Lucide a moment to fully initialize
+    setTimeout(() => {
+        initLucideIcons();
+    }, 100);
+});
+
 document.addEventListener('DOMContentLoaded', () => {
-    // Initialize theme system FIRST
     initTheme();
-    
-    // Update copyright year automatically
     updateCopyrightYear();
     
-    // CRITICAL: Initialize Lucide icons immediately on page load
-    // This ensures all icons (including theme toggle, social media, etc.) are rendered
+    // Try to initialize icons immediately
     initLucideIcons();
     
-    // Set up theme toggle buttons
     const desktopToggle = document.getElementById('theme-toggle');
     const mobileToggle = document.getElementById('mobile-theme-toggle');
     
@@ -383,23 +354,18 @@ document.addEventListener('DOMContentLoaded', () => {
     if (mobileToggle) {
         mobileToggle.addEventListener('click', () => {
             toggleTheme();
-            // Close mobile menu after toggling
             const sidebar = document.getElementById('mobile-sidebar');
             if (sidebar) sidebar.classList.remove('active');
         });
     }
     
-    // Initialize mobile menu
     initMobileMenu();
     
-    // Initialize page-specific features
     if (document.getElementById('posts-container')) {
-        // Homepage
         displayPosts();
         initSearch();
         initCategoryFilter();
     } else if (document.getElementById('post-header')) {
-        // Single post page
         displaySinglePost();
     }
 });
