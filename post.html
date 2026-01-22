@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Blog post">
+    
+    <!-- Title will be set dynamically by JavaScript -->
+    <title>Blog Post - Your Name</title>
+    
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/lucide.min.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" class="logo">Your Name</a>
+                
+                <nav class="nav-desktop">
+                    <a href="index.html" class="nav-link">Home</a>
+                    <a href="about.html" class="nav-link">About</a>
+                    <a href="contact.html" class="nav-link">Contact</a>
+                    
+                    <button id="theme-toggle" class="icon-button" aria-label="Toggle theme">
+                        <i data-lucide="moon" class="icon"></i>
+                    </button>
+                </nav>
+                
+                <button id="mobile-menu-button" class="icon-button mobile-only" aria-label="Open menu">
+                    <i data-lucide="menu" class="icon"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Sidebar -->
+    <div id="mobile-sidebar" class="mobile-sidebar">
+        <div class="mobile-sidebar-overlay"></div>
+        <div class="mobile-sidebar-content">
+            <button id="close-sidebar" class="icon-button close-button" aria-label="Close menu">
+                <i data-lucide="x" class="icon"></i>
+            </button>
+            
+            <nav class="mobile-nav">
+                <a href="index.html" class="mobile-nav-link">Home</a>
+                <a href="about.html" class="mobile-nav-link">About</a>
+                <a href="contact.html" class="mobile-nav-link">Contact</a>
+                
+                <div class="mobile-nav-divider"></div>
+                
+                <button id="mobile-theme-toggle" class="mobile-theme-button">
+                    <i data-lucide="moon" class="icon"></i>
+                    <span>Toggle Theme</span>
+                </button>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <article class="content-narrow">
+            <!-- Back Button -->
+            <a href="index.html" class="back-link">
+                ← Back to all posts
+            </a>
+            
+            <!-- Post Header (populated by JavaScript) -->
+            <div id="post-header" class="post-header">
+                <!-- Date, category, title, and tags will be inserted here -->
+            </div>
+            
+            <!-- Post Content (populated by JavaScript) -->
+            <div id="post-content" class="prose">
+                <!-- Post body will be inserted here -->
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p class="footer-text">© 2025 Your Name. All thoughts and words are my own.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
