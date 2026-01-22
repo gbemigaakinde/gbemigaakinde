@@ -8,7 +8,6 @@
     <title>Blog Post - Your Name</title>
     
     <link rel="stylesheet" href="styles.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/lucide.min.js"></script>
 </head>
 <body>
     <!-- Header -->
@@ -117,13 +116,20 @@
             </div>
             
             <!-- Copyright (auto-updates year) -->
-
             <div class="footer-bottom">
                 <p class="footer-copyright" id="copyright-text">&copy; 2026 Your Name. All thoughts and words are my own.</p>
             </div>
         </div>
     </footer>
 
+    <!-- Load Lucide Icons Library -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        // Initialize lucide icons as soon as library loads
+        lucide.createIcons();
+    </script>
+    
+    <!-- Load main script -->
     <script src="script.js"></script>
 </body>
 </html>
