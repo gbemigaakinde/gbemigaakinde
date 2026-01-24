@@ -359,10 +359,27 @@ function displayPosts(postsToShow = posts) {
 // SEARCH FUNCTIONALITY
 // ===================================
 
+function animateSearchPlaceholder() {
+    const searchInput = document.getElementById('search-input');
+    
+    if (!searchInput) return;
+    
+    const baseText = 'Search articles';
+    let dotCount = 0;
+    
+    setInterval(() => {
+        dotCount = (dotCount + 1) % 4; // Cycles through 0, 1, 2, 3
+        const dots = '.'.repeat(dotCount);
+        searchInput.setAttribute('placeholder', baseText + dots);
+    }, 500); // Changes every 500ms
+}
+
 function initSearch() {
     const searchInput = document.getElementById('search-input');
     
     if (!searchInput) return;
+    
+    animateSearchPlaceholder();
     
     searchInput.addEventListener('input', (e) => {
         const query = e.target.value.toLowerCase().trim();
