@@ -595,7 +595,7 @@ function displaySinglePost() {
 // ===================================
 
 function updateMetaTags(post) {
-    const baseUrl = window.location.origin;
+    const baseUrl = 'https://gbemigaakinde.vercel.app';
     const postUrl = `${baseUrl}/post.html?id=${post.id}`;
     const imageUrl = post.image ? `${baseUrl}/${post.image}` : `${baseUrl}/gbemiga.png`;
     
