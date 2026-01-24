@@ -2,56 +2,8 @@
 // BLOG POST DATA
 // ===================================
 const posts = [
-    {
-        id: 1,
-        title: "On the Nature of Change",
-        excerpt: "Reflecting on how transformation happens slowly, then all at once. Sometimes we don't notice the shifts until we look back and see how far we've traveled.",
-        date: "2025-01-15",
-        category: "Philosophy",
-        tags: ["reflection", "growth", "time"],
-        image: "images/change.jpg",
-        content: `Change is a curious thing. We often imagine it as dramatic—a sudden shift, a moment of clarity, a decision that changes everything. But more often than not, change is quiet. It's the accumulation of small choices, tiny adjustments in perspective, moments of awareness that we barely notice as they happen.
-
-I've been thinking about this lately, watching how habits form and dissolve, how relationships evolve, how our understanding of ourselves deepens over time. There's something profound in recognizing that the person we were a year ago, five years ago, is both intimately familiar and almost unrecognizable.
-
-The challenge isn't in making change happen—it's in paying attention while it does. Being present enough to notice the shifts, gentle enough with ourselves to allow them, and patient enough to trust the process even when progress feels invisible.
-
-What changes are quietly happening in your life right now?`
-    },
-    {
-        id: 2,
-        title: "The Art of Doing Nothing",
-        excerpt: "In a world obsessed with productivity, there's something radical about choosing stillness. A meditation on boredom, rest, and the spaces between.",
-        date: "2025-01-10",
-        category: "Lifestyle",
-        tags: ["rest", "mindfulness", "culture"],
-        image: "images/stillness.jpg",
-        content: `We've forgotten how to do nothing. Not "nothing productive"—I mean actual nothing. No phone, no book, no music, no task. Just... existing.
-
-This realization hit me last Sunday when I caught myself reaching for my phone within seconds of sitting down. The discomfort was immediate. The silence felt wrong. My mind scrambled for something, anything, to occupy itself with.
-
-But here's what I'm learning: boredom is not the enemy. It's the soil from which creativity grows. It's in those empty moments that our minds actually process, integrate, dream. We need white space in our lives the way a good design needs margins—not as wasted space, but as essential structure.
-
-Try it sometime. Sit and do absolutely nothing for ten minutes. Notice the resistance. Notice what emerges. You might be surprised.`
-    },
-    {
-        id: 3,
-        title: "Letters I'll Never Send",
-        excerpt: "Some things need to be written but never mailed. On the therapeutic power of unsent correspondence and words meant only for ourselves.",
-        date: "2025-01-05",
-        category: "Writing",
-        tags: ["writing", "healing", "introspection"],
-        image: "images/letters.jpg",
-        content: `Dear younger self, dear old friend, dear person I used to be...
-
-I've been writing letters I'll never send. Not because they're angry or cruel, but because they're not really for anyone else. They're for me. A way of processing, understanding, releasing.
-
-There's something powerful about writing to someone—real or imagined—with complete honesty, knowing they'll never read it. No performance, no second-guessing, no worrying about their reaction. Just truth on the page.
-
-Sometimes I write to apologize. Sometimes to forgive. Sometimes just to say things I wish I'd said when I had the chance. The words sit in a folder on my computer, unread by anyone but me, and somehow that's exactly what they need to be.
-
-If you wrote a letter you'd never send, who would it be to? What would you say?`
-    }
+    // Your posts will go here
+    // See instructions below on how to add posts
 ];
 
 // ===================================
@@ -521,20 +473,15 @@ function displaySinglePost() {
         <div class="post-tags">
             ${tagsHTML}
         </div>
-    `;
-    
-    const paragraphs = post.content
-        .split('\n\n')
-        .map(p => `<p>${p}</p>`)
-        .join('');
-    
-    postContent.innerHTML = `
-        ${paragraphs}
+        
         <button onclick="sharePost()" class="share-button">
             <i data-lucide="share-2" style="width: 16px; height: 16px;"></i>
             Share this post
         </button>
     `;
+    
+    const paragraphs = post.content.split('\n\n').map(p => `<p>${p}</p>`).join('');
+    postContent.innerHTML = paragraphs;
     
     // Display related posts
     if (relatedPostsContainer) {
