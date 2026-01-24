@@ -55,11 +55,91 @@ If you wrote a letter you'd never send, who would it be to? What would you say?`
 ];
 
 // ===================================
+// READING TIME CALCULATION
+// ===================================
+
+function calculateReadingTime(content) {
+    const wordsPerMinute = 200;
+    const wordCount = content.trim().split(/\s+/).length;
+    const readingTime = Math.ceil(wordCount / wordsPerMinute);
+    return readingTime;
+}
+
+// ===================================
+// RELATED POSTS FUNCTION
+// ===================================
+
+function getRelatedPosts(currentPost, allPosts, maxResults = 3) {
+    // Filter out current post
+    const otherPosts = allPosts.filter(post => post.id !== currentPost.id);
+    
+    // Score posts based on matching tags and category
+    const scoredPosts = otherPosts.map(post => {
+        let score = 0;
+        
+        // Same category: +3 points
+        if (post.category === currentPost.category) {
+            score += 3;
+        }
+        
+        // Matching tags: +1 point per tag
+        const matchingTags = post.tags.filter(tag => 
+            currentPost.tags.includes(tag)
+        ).length;
+        score += matchingTags;
+        
+        return { post, score };
+    });
+    
+    // Sort by score and return top results
+    return scoredPosts
+        .sort((a, b) => b.score - a.score)
+        .slice(0, maxResults)
+        .map(item => item.post);
+}
+
+// ===================================
+// SHARE FUNCTIONALITY
+// ===================================
+
+function sharePost() {
+    const url = window.location.href;
+    const title = document.querySelector('.post-header h1')?.textContent || 'Check out this post';
+    
+    // Check if Web Share API is supported (mobile & some modern browsers)
+    if (navigator.share) {
+        navigator.share({
+            title: title,
+            url: url
+        }).catch(err => {
+            // If user cancels, do nothing
+            if (err.name !== 'AbortError') {
+                console.log('Share failed:', err);
+            }
+        });
+    } else {
+        // Fallback: Copy link to clipboard
+        navigator.clipboard.writeText(url).then(() => {
+            // Show temporary notification
+            const button = document.querySelector('.share-button');
+            const originalText = button.innerHTML;
+            button.innerHTML = '<i data-lucide="check" style="width: 16px; height: 16px;"></i> Link copied!';
+            
+            setTimeout(() => {
+                button.innerHTML = originalText;
+                initLucideIcons();
+            }, 2000);
+            
+            initLucideIcons();
+        });
+    }
+}
+
+// ===================================
 // LUCIDE ICONS INITIALIZATION
 // ===================================
 
 function initLucideIcons() {
-    // Wait for lucide to be available, then create icons
     if (window.lucide && window.lucide.createIcons) {
         window.lucide.createIcons();
     }
@@ -187,6 +267,8 @@ function displayPosts(postsToShow = posts) {
             year: 'numeric' 
         });
         
+        const readingTime = calculateReadingTime(post.content);
+        
         const tagsHTML = post.tags.map(tag => 
             `<span class="post-tag">
                 <i data-lucide="tag" style="width: 12px; height: 12px;"></i>
@@ -202,6 +284,10 @@ function displayPosts(postsToShow = posts) {
                         ${formattedDate}
                     </span>
                     <span class="post-category">${post.category}</span>
+                    <span class="post-reading-time">
+                        <i data-lucide="clock" style="width: 14px; height: 14px;"></i>
+                        ${readingTime} min read
+                    </span>
                 </div>
                 
                 <h2 class="post-title">${post.title}</h2>
@@ -286,6 +372,7 @@ function initCategoryFilter() {
 function displaySinglePost() {
     const postHeader = document.getElementById('post-header');
     const postContent = document.getElementById('post-content');
+    const relatedPostsContainer = document.getElementById('related-posts');
     
     if (!postHeader || !postContent) return;
     
@@ -307,6 +394,8 @@ function displaySinglePost() {
         year: 'numeric' 
     });
     
+    const readingTime = calculateReadingTime(post.content);
+    
     const tagsHTML = post.tags.map(tag => 
         `<span class="post-tag">
             <i data-lucide="tag" style="width: 12px; height: 12px;"></i>
@@ -323,6 +412,10 @@ function displaySinglePost() {
                 ${formattedDate}
             </span>
             <span class="post-category">${post.category}</span>
+            <span class="post-reading-time">
+                <i data-lucide="clock" style="width: 14px; height: 14px;"></i>
+                ${readingTime} min read
+            </span>
         </div>
         
         <h1>${post.title}</h1>
@@ -330,10 +423,49 @@ function displaySinglePost() {
         <div class="post-tags">
             ${tagsHTML}
         </div>
+        
+        <button onclick="sharePost()" class="share-button">
+            <i data-lucide="share-2" style="width: 16px; height: 16px;"></i>
+            Share this post
+        </button>
     `;
     
     const paragraphs = post.content.split('\n\n').map(p => `<p>${p}</p>`).join('');
     postContent.innerHTML = paragraphs;
+    
+    // Display related posts
+    if (relatedPostsContainer) {
+        const relatedPosts = getRelatedPosts(post, posts);
+        
+        if (relatedPosts.length > 0) {
+            const relatedPostsHTML = relatedPosts.map(relatedPost => {
+                const relatedDate = new Date(relatedPost.date);
+                const relatedFormattedDate = relatedDate.toLocaleDateString('en-US', { 
+                    month: 'short', 
+                    day: 'numeric', 
+                    year: 'numeric' 
+                });
+                
+                return `
+                    <a href="post.html?id=${relatedPost.id}" class="related-post-card">
+                        ${relatedPost.image ? `<img src="${relatedPost.image}" alt="${relatedPost.title}" class="related-post-image">` : ''}
+                        <div class="related-post-content">
+                            <span class="related-post-category">${relatedPost.category}</span>
+                            <h3 class="related-post-title">${relatedPost.title}</h3>
+                            <span class="related-post-date">${relatedFormattedDate}</span>
+                        </div>
+                    </a>
+                `;
+            }).join('');
+            
+            relatedPostsContainer.innerHTML = `
+                <h2 class="related-posts-heading">Related Posts</h2>
+                <div class="related-posts-grid">
+                    ${relatedPostsHTML}
+                </div>
+            `;
+        }
+    }
     
     initLucideIcons();
 }
@@ -342,9 +474,7 @@ function displaySinglePost() {
 // INITIALIZATION
 // ===================================
 
-// Wait for both DOM and Lucide library to be ready
 window.addEventListener('load', () => {
-    // Give Lucide a moment to fully initialize
     setTimeout(() => {
         initLucideIcons();
     }, 100);
@@ -354,7 +484,6 @@ document.addEventListener('DOMContentLoaded', () => {
     initTheme();
     updateCopyrightYear();
     
-    // Try to initialize icons immediately
     initLucideIcons();
     
     const desktopToggle = document.getElementById('theme-toggle');
