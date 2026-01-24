@@ -3,11 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Open Graph Meta Tags for Social Sharing -->
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="'Gbemiga Akinde">
+    <meta property="og:title" content="Blog Post - 'Gbemiga Akinde">
+    <meta property="og:description" content="Personal blog - thoughts, reflections, and explorations">
+    <meta property="og:url" content="https://yourdomain.com">
+    <meta property="og:image" content="https://yourdomain.com/images/default-og.jpg">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@akindegbemiga">
+    <meta name="twitter:title" content="Blog Post - 'Gbemiga Akinde">
+    <meta name="twitter:description" content="Personal blog - thoughts, reflections, and explorations">
+    <meta name="twitter:image" content="https://yourdomain.com/images/default-og.jpg">
+    
     <meta name="description" content="Blog post">
     
-    <title>Blog Post - Oluwagbemiga Akinde</title>
+    <title>Blog Post - 'Gbemiga Akinde</title>
     
     <link rel="stylesheet" href="styles.css">
+    
+    <!-- Google Analytics - Replace YOUR_MEASUREMENT_ID with your actual ID -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=YOUR_MEASUREMENT_ID"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'YOUR_MEASUREMENT_ID');
+    </script>
 </head>
 <body>
     <!-- Header -->
@@ -62,12 +87,17 @@
 
             <!-- Post Header (populated by JavaScript) -->
             <div id="post-header" class="post-header">
-                <!-- Date, category, title, and tags will be inserted here -->
+                <!-- Date, category, title, tags, and share button will be inserted here -->
             </div>
 
             <!-- Post Content (populated by JavaScript) -->
             <div id="post-content" class="prose">
                 <!-- Post body will be inserted here -->
+            </div>
+            
+            <!-- Related Posts (populated by JavaScript) -->
+            <div id="related-posts">
+                <!-- Related posts will be inserted here -->
             </div>
         </article>
     </main>
@@ -80,7 +110,7 @@
                 <div class="footer-about">
                     <h3 class="footer-title">About</h3>
                     <p class="footer-text">
-                        This is a personal space where I share how I see things. Writing helps me think clearly, and if any of it resonates with you, that’s a good place to meet.
+                        This is a personal space where I share how I see things. Writing helps me think clearly, and if any of it resonates with you, that's a good place to meet.
                     </p>
                 </div>
                 
@@ -96,17 +126,18 @@
                 </div>
                 
                 <!-- Social Media Links -->
-<div class="footer-social">
-    <h3 class="footer-title">Connect</h3>
-    <div class="social-links">
-        <a href="https://x.com/akindegbemiga" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="X">
-            <img src="logo-black.png" alt="X logo" class="social-icon" />
-        </a>
-        <a href="https://instagram.com/akindegbemiga" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="Instagram">
-            <i data-lucide="instagram" class="social-icon"></i>
-        </a>
-    </div>
-</div>
+                <div class="footer-social">
+                    <h3 class="footer-title">Connect</h3>
+                    <div class="social-links">
+                        <a href="https://x.com/akindegbemiga" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="X">
+                            <img src="logo-black.png" alt="X logo" class="x-logo social-icon" />
+                        </a>
+                        <a href="https://instagram.com/akindegbemiga" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="Instagram">
+                            <i data-lucide="instagram" class="social-icon"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
             
             <!-- Copyright (auto-updates year) -->
             <div class="footer-bottom">
