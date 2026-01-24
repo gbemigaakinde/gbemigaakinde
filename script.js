@@ -473,15 +473,17 @@ function displaySinglePost() {
         <div class="post-tags">
             ${tagsHTML}
         </div>
-        
+    `;
+    
+    const paragraphs = post.content.split('\n\n').map(p => `<p>${p}</p>`).join('');
+    
+    postContent.innerHTML = `
+        ${paragraphs}
         <button onclick="sharePost()" class="share-button">
             <i data-lucide="share-2" style="width: 16px; height: 16px;"></i>
             Share this post
         </button>
     `;
-    
-    const paragraphs = post.content.split('\n\n').map(p => `<p>${p}</p>`).join('');
-    postContent.innerHTML = paragraphs;
     
     // Display related posts
     if (relatedPostsContainer) {
