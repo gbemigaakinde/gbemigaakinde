@@ -492,17 +492,20 @@ function displaySinglePost() {
         </div>
     `;
     
-    const paragraphs = post.content.split('\n\n').map(p => `<p>${p}</p>`).join('');
+    const paragraphs = post.content
+        .split('\n\n')
+        .map(p => `<p>${p}</p>`)
+        .join('');
     
     postContent.innerHTML = `
         ${paragraphs}
+        
         <button onclick="sharePost()" class="share-button">
             <i data-lucide="share-2" style="width: 16px; height: 16px;"></i>
             Share this post
         </button>
     `;
     
-    // Display related posts
     if (relatedPostsContainer) {
         const relatedPosts = getRelatedPosts(post, posts);
         
@@ -537,7 +540,208 @@ function displaySinglePost() {
     }
     
     initLucideIcons();
+    initNotepad(postId);
+    initHighlighting(postId);
 }
+
+// ===================================
+// NOTEPAD FUNCTIONALITY
+// ===================================
+
+function initNotepad(postId) {
+    const notepadToggle = document.getElementById('notepad-toggle');
+    const notepadPanel = document.getElementById('notepad-panel');
+    const closeNotepad = document.getElementById('close-notepad');
+    const notepadTextarea = document.getElementById('notepad-textarea');
+    const copyNotesBtn = document.getElementById('copy-notes');
+    
+    if (!notepadToggle || !notepadPanel) return;
+    
+    // Load saved notes for this post
+    const savedNotes = localStorage.getItem(`notes-post-${postId}`);
+    if (savedNotes && notepadTextarea) {
+        notepadTextarea.value = savedNotes;
+    }
+    
+    // Toggle panel
+    notepadToggle.addEventListener('click', () => {
+        notepadPanel.classList.add('active');
+    });
+    
+    if (closeNotepad) {
+        closeNotepad.addEventListener('click', () => {
+            notepadPanel.classList.remove('active');
+        });
+    }
+    
+    // Auto-save notes
+    if (notepadTextarea) {
+        notepadTextarea.addEventListener('input', () => {
+            localStorage.setItem(`notes-post-${postId}`, notepadTextarea.value);
+        });
+    }
+    
+    // Copy all notes and highlights
+    if (copyNotesBtn) {
+        copyNotesBtn.addEventListener('click', () => {
+            const notes = notepadTextarea ? notepadTextarea.value : '';
+            const highlights = getHighlightsForPost(postId);
+            
+            let textToCopy = '';
+            
+            if (notes.trim()) {
+                textToCopy += `NOTES:\n${notes}\n\n`;
+            }
+            
+            if (highlights.length > 0) {
+                textToCopy += `HIGHLIGHTS:\n`;
+                highlights.forEach((highlight, index) => {
+                    textToCopy += `${index + 1}. ${highlight}\n`;
+                });
+            }
+            
+            if (textToCopy.trim()) {
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                    const originalText = copyNotesBtn.innerHTML;
+                    copyNotesBtn.innerHTML = '<i data-lucide="check" style="width: 16px; height: 16px;"></i> Copied!';
+                    
+                    setTimeout(() => {
+                        copyNotesBtn.innerHTML = originalText;
+                        initLucideIcons();
+                    }, 2000);
+                    
+                    initLucideIcons();
+                });
+            }
+        });
+    }
+}
+
+// ===================================
+// TEXT HIGHLIGHTING FUNCTIONALITY
+// ===================================
+
+function initHighlighting(postId) {
+    const postContent = document.getElementById('post-content');
+    const highlightsList = document.getElementById('highlights-list');
+    const clearHighlightsBtn = document.getElementById('clear-highlights');
+    
+    if (!postContent) return;
+    
+    // Load existing highlights
+    loadHighlights(postId);
+    
+    // Handle text selection
+    postContent.addEventListener('mouseup', () => {
+        const selection = window.getSelection();
+        const selectedText = selection.toString().trim();
+        
+        if (selectedText.length > 0) {
+            saveHighlight(postId, selectedText);
+            wrapSelection(selection);
+            updateHighlightsList(postId);
+            selection.removeAllRanges();
+        }
+    });
+    
+    // Clear all highlights
+    if (clearHighlightsBtn) {
+        clearHighlightsBtn.addEventListener('click', () => {
+            clearAllHighlights(postId);
+        });
+    }
+}
+
+function saveHighlight(postId, text) {
+    const highlights = getHighlightsForPost(postId);
+    
+    // Don't save duplicates
+    if (!highlights.includes(text)) {
+        highlights.push(text);
+        localStorage.setItem(`highlights-post-${postId}`, JSON.stringify(highlights));
+    }
+}
+
+function getHighlightsForPost(postId) {
+    const saved = localStorage.getItem(`highlights-post-${postId}`);
+    return saved ? JSON.parse(saved) : [];
+}
+
+function wrapSelection(selection) {
+    if (selection.rangeCount > 0) {
+        const range = selection.getRangeAt(0);
+        const span = document.createElement('span');
+        span.className = 'highlight';
+        
+        try {
+            range.surroundContents(span);
+        } catch (e) {
+            // If surroundContents fails (e.g., selection spans multiple elements),
+            // just highlight what we can
+            console.log('Could not wrap selection');
+        }
+    }
+}
+
+function loadHighlights(postId) {
+    // Highlights are visually shown when user creates them
+    // This function ensures the list is up to date
+    updateHighlightsList(postId);
+}
+
+function updateHighlightsList(postId) {
+    const highlightsList = document.getElementById('highlights-list');
+    if (!highlightsList) return;
+    
+    const highlights = getHighlightsForPost(postId);
+    
+    if (highlights.length === 0) {
+        highlightsList.innerHTML = '<p class="highlights-empty">Select text in the post to highlight it</p>';
+        return;
+    }
+    
+    highlightsList.innerHTML = highlights.map((text, index) => `
+        <div class="highlight-item">
+            <div class="highlight-item-text">"${text}"</div>
+            <div class="highlight-item-actions">
+                <button class="highlight-remove-btn" onclick="removeHighlight(${postId}, ${index})">
+                    Remove
+                </button>
+            </div>
+        </div>
+    `).join('');
+}
+
+function removeHighlight(postId, index) {
+    const highlights = getHighlightsForPost(postId);
+    highlights.splice(index, 1);
+    localStorage.setItem(`highlights-post-${postId}`, JSON.stringify(highlights));
+    updateHighlightsList(postId);
+}
+
+function clearAllHighlights(postId) {
+    // Remove from storage
+    localStorage.removeItem(`highlights-post-${postId}`);
+    
+    // Remove visual highlights
+    const postContent = document.getElementById('post-content');
+    if (postContent) {
+        const highlightedElements = postContent.querySelectorAll('.highlight');
+        highlightedElements.forEach(el => {
+            const parent = el.parentNode;
+            while (el.firstChild) {
+                parent.insertBefore(el.firstChild, el);
+            }
+            parent.removeChild(el);
+        });
+    }
+    
+    // Update list
+    updateHighlightsList(postId);
+}
+
+// Make removeHighlight available globally for onclick handler
+window.removeHighlight = removeHighlight;
 
 // ===================================
 // INITIALIZATION
