@@ -341,6 +341,14 @@ a:hover {
     color: var(--color-accent);
 }
 
+.post-reading-time {
+    font-size: 14px;
+    color: var(--color-text-muted);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
 .post-title {
     font-size: 28px;
     margin-bottom: 16px;
@@ -433,6 +441,27 @@ a:hover {
     margin-bottom: 16px;
 }
 
+/* Share Button */
+.share-button {
+    margin-top: 24px;
+    padding: 12px 24px;
+    background-color: var(--color-accent);
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-family: inherit;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: opacity var(--transition-speed);
+}
+
+.share-button:hover {
+    opacity: 0.8;
+}
+
 /* ===================================
    PROSE (Blog Post Content)
    =================================== */
@@ -485,7 +514,69 @@ a:hover {
 }
 
 /* ===================================
-   FOOTER (UPDATED)
+   RELATED POSTS
+   =================================== */
+
+.related-posts-heading {
+    font-size: 24px;
+    font-weight: 300;
+    margin: 64px 0 24px;
+    padding-top: 48px;
+    border-top: 1px solid var(--color-border);
+}
+
+.related-posts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
+    margin-bottom: 48px;
+}
+
+.related-post-card {
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all var(--transition-speed);
+    display: block;
+}
+
+.related-post-card:hover {
+    border-color: var(--color-accent);
+    transform: translateY(-4px);
+    opacity: 1;
+}
+
+.related-post-image {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+}
+
+.related-post-content {
+    padding: 16px;
+}
+
+.related-post-category {
+    font-size: 12px;
+    color: var(--color-accent);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.related-post-title {
+    font-size: 18px;
+    font-weight: 400;
+    margin: 8px 0;
+    line-height: 1.4;
+}
+
+.related-post-date {
+    font-size: 13px;
+    color: var(--color-text-muted);
+}
+
+/* ===================================
+   FOOTER
    =================================== */
 
 .footer {
@@ -573,6 +664,83 @@ a:hover {
 }
 
 /* ===================================
+   PRINT STYLES
+   =================================== */
+
+@media print {
+    /* Hide non-essential elements when printing */
+    .header,
+    .search-container,
+    .category-filter,
+    .mobile-sidebar,
+    .footer,
+    .share-button,
+    .back-link,
+    .post-tags,
+    .related-posts-heading,
+    .related-posts-grid {
+        display: none !important;
+    }
+    
+    /* Optimize for print */
+    body {
+        background-color: white;
+        color: black;
+        font-size: 12pt;
+        line-height: 1.5;
+    }
+    
+    .main-content {
+        max-width: 100%;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .content-narrow {
+        max-width: 100%;
+    }
+    
+    .post-header h1 {
+        font-size: 24pt;
+        margin-bottom: 12pt;
+    }
+    
+    .post-meta {
+        margin-bottom: 16pt;
+    }
+    
+    .post-featured-image {
+        max-height: none;
+        page-break-inside: avoid;
+    }
+    
+    .prose p {
+        margin-bottom: 12pt;
+        orphans: 3;
+        widows: 3;
+    }
+    
+    .prose h2 {
+        page-break-after: avoid;
+        font-size: 18pt;
+        margin-top: 24pt;
+    }
+    
+    .prose h3 {
+        page-break-after: avoid;
+        font-size: 14pt;
+        margin-top: 18pt;
+    }
+    
+    /* Ensure links show URLs when printed */
+    .prose a[href]:after {
+        content: " (" attr(href) ")";
+        font-size: 10pt;
+        color: #666;
+    }
+}
+
+/* ===================================
    RESPONSIVE DESIGN
    =================================== */
 
@@ -607,6 +775,10 @@ a:hover {
         grid-template-columns: 1fr;
         gap: 24px;
     }
+    
+    .related-posts-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 /* Small mobile */
@@ -639,5 +811,10 @@ a:hover {
     .social-link {
         width: 36px;
         height: 36px;
+    }
+    
+    .share-button {
+        width: 100%;
+        justify-content: center;
     }
 }
