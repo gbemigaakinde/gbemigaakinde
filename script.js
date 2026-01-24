@@ -14,7 +14,7 @@ const posts = [
 
 There is a kind of comfort in delay. When you slow down, you feel responsible. You feel careful. You feel as though you are doing the work, even when nothing meaningful is happening. This is why people can spend weeks, months, even years preparing to make a decision that is already flawed at its core. The problem is not that they rushed, but that they are walking in the wrong direction without noticing it.
 
-You must have heard stories of a person who intends to build a house on land he never properly checked. He hires a surveyor, not to verify ownership, but to measure how large his dream house will be. He sits with architects, chooses tiles, debates roofing sheets, and delays construction until every detail feels right. From the outside, he looks patient and thorough. He doesn’t want to make a mistake. Then one morning, after the house is half built, the rightful owner shows up with documents. The time he took did not protect him. It only made the loss more painful.
+You must have heard stories of a person who intends to build a house on land he never properly checked. He hires a surveyor, not to verify ownership, but to measure how large his dream house will be. He sits with architects, chooses tiles, debates roofing sheets, and delays construction until every detail feels right. From the outside, he looks patient and thorough. He doesn't want to make a mistake. Then one morning, after the house is half built, the rightful owner shows up with documents. The time he took did not protect him. It only made the loss more painful.
 
 The mistake happened early. Everything after that was polish on a bad foundation.
 
@@ -30,11 +30,11 @@ Someone else sees wrongdoing at work or in their community. They notice it early
 
 Taking time did not make the choice better. It only made the consequences wider.
 
-This is where people misunderstand caution. Caution does not mean that you have to be slow. It doesn’t mean you have to “wait a bit” maybe things will change. It otherwise means having direction. You can move slowly toward what is right, or slowly away from it. The pace does not redeem the path.
+This is where people misunderstand caution. Caution does not mean that you have to be slow. It doesn't mean you have to "wait a bit" maybe things will change. It otherwise means having direction. You can move slowly toward what is right, or slowly away from it. The pace does not redeem the path.
 
 At some point, every serious decision demands an honest question. Am I delaying to understand better, or am I delaying to feel better? One gives you clarity. The other gives you regret.
 
-There is a (often moral) pressure to admire long processes. We praise people who say, “I thought about this for years.” We trust decisions that took time to cook. But time can also be a way of hiding from responsibility. It gives us cover. If things go wrong, we say we did not rush. We say we tried our best. But effort is not the same as judgment.
+There is a (often moral) pressure to admire long processes. We praise people who say, "I thought about this for years." We trust decisions that took time to cook. But time can also be a way of hiding from responsibility. It gives us cover. If things go wrong, we say we did not rush. We say we tried our best. But effort is not the same as judgment.
 
 A bad idea does not become wise because it matured slowly.
 
@@ -494,7 +494,11 @@ function displaySinglePost() {
         return;
     }
     
+    // Update page title
     document.title = `${post.title} - 'Gbemiga Akinde`;
+    
+    // Update Open Graph and Twitter meta tags for this specific post
+    updateMetaTags(post);
     
     const date = new Date(post.date);
     const formattedDate = date.toLocaleDateString('en-US', { 
@@ -584,6 +588,49 @@ function displaySinglePost() {
     initLucideIcons();
     initNotepad(postId);
     initHighlighting(postId);
+}
+
+// ===================================
+// UPDATE META TAGS FOR SOCIAL SHARING
+// ===================================
+
+function updateMetaTags(post) {
+    const baseUrl = window.location.origin;
+    const postUrl = `${baseUrl}/post.html?id=${post.id}`;
+    const imageUrl = post.image ? `${baseUrl}/${post.image}` : `${baseUrl}/gbemiga.png`;
+    
+    // Get the first 160 characters of excerpt for description
+    const description = post.excerpt.length > 160 
+        ? post.excerpt.substring(0, 157) + '...' 
+        : post.excerpt;
+    
+    // Update Open Graph tags
+    updateOrCreateMetaTag('property', 'og:title', post.title);
+    updateOrCreateMetaTag('property', 'og:description', description);
+    updateOrCreateMetaTag('property', 'og:url', postUrl);
+    updateOrCreateMetaTag('property', 'og:image', imageUrl);
+    updateOrCreateMetaTag('property', 'og:type', 'article');
+    
+    // Update Twitter Card tags
+    updateOrCreateMetaTag('name', 'twitter:title', post.title);
+    updateOrCreateMetaTag('name', 'twitter:description', description);
+    updateOrCreateMetaTag('name', 'twitter:image', imageUrl);
+    
+    // Update standard meta description
+    updateOrCreateMetaTag('name', 'description', description);
+}
+
+function updateOrCreateMetaTag(attribute, attributeValue, content) {
+    let tag = document.querySelector(`meta[${attribute}="${attributeValue}"]`);
+    
+    if (tag) {
+        tag.setAttribute('content', content);
+    } else {
+        tag = document.createElement('meta');
+        tag.setAttribute(attribute, attributeValue);
+        tag.setAttribute('content', content);
+        document.head.appendChild(tag);
+    }
 }
 
 // ===================================
