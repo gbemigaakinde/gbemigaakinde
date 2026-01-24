@@ -55,6 +55,13 @@ If you wrote a letter you'd never send, who would it be to? What would you say?`
 ];
 
 // ===================================
+// PAGINATION SETTINGS
+// ===================================
+const POSTS_PER_PAGE = 5;
+let currentPage = 1;
+let currentFilteredPosts = posts;
+
+// ===================================
 // READING TIME CALCULATION
 // ===================================
 
@@ -246,6 +253,81 @@ function initMobileMenu() {
 }
 
 // ===================================
+// PAGINATION FUNCTIONS
+// ===================================
+
+function getTotalPages(postsArray) {
+    return Math.ceil(postsArray.length / POSTS_PER_PAGE);
+}
+
+function getPaginatedPosts(postsArray, page) {
+    const startIndex = (page - 1) * POSTS_PER_PAGE;
+    const endIndex = startIndex + POSTS_PER_PAGE;
+    return postsArray.slice(startIndex, endIndex);
+}
+
+function renderPagination(postsArray) {
+    const paginationContainer = document.getElementById('pagination-container');
+    
+    if (!paginationContainer) return;
+    
+    const totalPages = getTotalPages(postsArray);
+    
+    // Don't show pagination if only one page or no posts
+    if (totalPages <= 1) {
+        paginationContainer.innerHTML = '';
+        return;
+    }
+    
+    const prevDisabled = currentPage === 1 ? 'disabled' : '';
+    const nextDisabled = currentPage === totalPages ? 'disabled' : '';
+    
+    paginationContainer.innerHTML = `
+        <div class="pagination">
+            <button 
+                class="pagination-button ${prevDisabled}" 
+                onclick="changePage(${currentPage - 1})"
+                ${prevDisabled ? 'disabled' : ''}
+            >
+                <i data-lucide="chevron-left" style="width: 18px; height: 18px;"></i>
+                Previous
+            </button>
+            
+            <span class="pagination-info">
+                Page ${currentPage} of ${totalPages}
+            </span>
+            
+            <button 
+                class="pagination-button ${nextDisabled}" 
+                onclick="changePage(${currentPage + 1})"
+                ${nextDisabled ? 'disabled' : ''}
+            >
+                Next
+                <i data-lucide="chevron-right" style="width: 18px; height: 18px;"></i>
+            </button>
+        </div>
+    `;
+    
+    initLucideIcons();
+}
+
+function changePage(newPage) {
+    const totalPages = getTotalPages(currentFilteredPosts);
+    
+    if (newPage < 1 || newPage > totalPages) return;
+    
+    currentPage = newPage;
+    
+    // Scroll to top of posts container smoothly
+    const postsContainer = document.getElementById('posts-container');
+    if (postsContainer) {
+        postsContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    
+    displayPosts(currentFilteredPosts);
+}
+
+// ===================================
 // HOMEPAGE: DISPLAY POSTS
 // ===================================
 
@@ -254,12 +336,19 @@ function displayPosts(postsToShow = posts) {
     
     if (!container) return;
     
+    // Update current filtered posts for pagination
+    currentFilteredPosts = postsToShow;
+    
     if (postsToShow.length === 0) {
         container.innerHTML = '<p style="color: var(--color-text-muted); text-align: center;">No posts found.</p>';
+        renderPagination([]);
         return;
     }
     
-    container.innerHTML = postsToShow.map(post => {
+    // Get posts for current page
+    const paginatedPosts = getPaginatedPosts(postsToShow, currentPage);
+    
+    container.innerHTML = paginatedPosts.map(post => {
         const date = new Date(post.date);
         const formattedDate = date.toLocaleDateString('en-US', { 
             month: 'long', 
@@ -308,6 +397,9 @@ function displayPosts(postsToShow = posts) {
         `;
     }).join('');
     
+    // Render pagination controls
+    renderPagination(postsToShow);
+    
     initLucideIcons();
 }
 
@@ -322,6 +414,9 @@ function initSearch() {
     
     searchInput.addEventListener('input', (e) => {
         const query = e.target.value.toLowerCase().trim();
+        
+        // Reset to page 1 when searching
+        currentPage = 1;
         
         if (query === '') {
             displayPosts(posts);
@@ -350,6 +445,9 @@ function initCategoryFilter() {
         button.addEventListener('click', () => {
             categoryButtons.forEach(btn => btn.classList.remove('active'));
             button.classList.add('active');
+            
+            // Reset to page 1 when changing category
+            currentPage = 1;
             
             const category = button.getAttribute('data-category');
             
