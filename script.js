@@ -92,6 +92,7 @@ function initTheme() {
 function applyTheme(theme) {
     document.documentElement.setAttribute('data-theme', theme);
     updateThemeIcons(theme === 'dark');
+    updateXLogo(theme === 'dark');
 }
 
 function toggleTheme() {
@@ -121,6 +122,13 @@ function updateThemeIcons(isDark) {
     initLucideIcons();
 }
 
+function updateXLogo(isDark) {
+    const xLogos = document.querySelectorAll('.x-logo');
+    xLogos.forEach(logo => {
+        logo.src = isDark ? 'logo-white.png' : 'logo-black.png';
+    });
+}
+
 // ===================================
 // COPYRIGHT YEAR AUTO-UPDATE
 // ===================================
@@ -129,7 +137,7 @@ function updateCopyrightYear() {
     const copyrightElement = document.getElementById('copyright-text');
     if (copyrightElement) {
         const currentYear = new Date().getFullYear();
-        copyrightElement.textContent = `© ${currentYear} Your Name. All thoughts and words are my own.`;
+        copyrightElement.textContent = `© ${currentYear} 'Gbemiga Akinde. All thoughts and words are my own.`;
     }
 }
 
@@ -290,7 +298,7 @@ function displaySinglePost() {
         return;
     }
     
-    document.title = `${post.title} - Your Name`;
+    document.title = `${post.title} - 'Gbemiga Akinde`;
     
     const date = new Date(post.date);
     const formattedDate = date.toLocaleDateString('en-US', { 
