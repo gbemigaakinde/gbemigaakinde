@@ -9,7 +9,7 @@ const posts = [
         date: "2026-01-25",
         category: "Philosophy",
         tags: ["decision-making", "self-awareness", "hard truths"],
-        image: "images/change.jpg",
+        image: "images/IMG_4748.jpeg",
         content: `People often praise slowness. We are told to take our time, to think things through, to wait for clarity. Speed is then linked to recklessness, while delay is framed as wisdom. But that belief deserves some suspicion. Time, by itself, does not clean up bad thinking. It only stretches it out.
 
 There is a kind of comfort in delay. When you slow down, you feel responsible. You feel careful. You feel as though you are doing the work, even when nothing meaningful is happening. This is why people can spend weeks, months, even years preparing to make a decision that is already flawed at its core. The problem is not that they rushed, but that they are walking in the wrong direction without noticing it.
