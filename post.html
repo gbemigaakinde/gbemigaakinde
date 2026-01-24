@@ -26,11 +26,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@300;400&display=swap" rel="stylesheet">
-   
-     <link rel="icon" type="image/png" sizes="32x32" href="gbemiga.png">
-<link rel="icon" type="image/png" sizes="16x16" href="gbemiga.png">
-<link rel="apple-touch-icon" sizes="180x180" href="gbemiga.png">
-<link rel="shortcut icon" href="gbemiga.png">
     
     <link rel="stylesheet" href="styles.css">
     
@@ -109,6 +104,51 @@
                 <!-- Related posts will be inserted here -->
             </div>
         </article>
+        
+        <!-- Floating Notepad Button -->
+        <button id="notepad-toggle" class="notepad-toggle" aria-label="Toggle notepad">
+            <i data-lucide="sticky-note" class="icon"></i>
+        </button>
+        
+        <!-- Notepad Panel -->
+        <div id="notepad-panel" class="notepad-panel">
+            <div class="notepad-header">
+                <h3 class="notepad-title">My Notes</h3>
+                <button id="close-notepad" class="icon-button" aria-label="Close notepad">
+                    <i data-lucide="x" class="icon"></i>
+                </button>
+            </div>
+            
+            <div class="notepad-content">
+                <div class="notepad-section">
+                    <h4 class="notepad-section-title">Personal Notes</h4>
+                    <textarea 
+                        id="notepad-textarea" 
+                        class="notepad-textarea" 
+                        placeholder="Write your thoughts here..."
+                    ></textarea>
+                </div>
+                
+                <div class="notepad-section">
+                    <h4 class="notepad-section-title">
+                        Highlights
+                        <button id="clear-highlights" class="clear-highlights-btn">
+                            Clear all
+                        </button>
+                    </h4>
+                    <div id="highlights-list" class="highlights-list">
+                        <p class="highlights-empty">Select text in the post to highlight it</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="notepad-footer">
+                <button id="copy-notes" class="notepad-button">
+                    <i data-lucide="copy" style="width: 16px; height: 16px;"></i>
+                    Copy All
+                </button>
+            </div>
+        </div>
     </main>
 
     <!-- Footer -->
