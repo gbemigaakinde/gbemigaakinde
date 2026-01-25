@@ -1058,6 +1058,152 @@ a:hover {
     background-color: rgba(255, 235, 59, 0.35);
 }
 
+/* Highlight Color Variations */
+.highlight-yellow {
+    background-color: rgba(255, 235, 59, 0.4);
+}
+
+.highlight-yellow:hover {
+    background-color: rgba(255, 235, 59, 0.6);
+}
+
+.highlight-green {
+    background-color: rgba(76, 175, 80, 0.3);
+}
+
+.highlight-green:hover {
+    background-color: rgba(76, 175, 80, 0.5);
+}
+
+.highlight-blue {
+    background-color: rgba(33, 150, 243, 0.3);
+}
+
+.highlight-blue:hover {
+    background-color: rgba(33, 150, 243, 0.5);
+}
+
+.highlight-pink {
+    background-color: rgba(233, 30, 99, 0.3);
+}
+
+.highlight-pink:hover {
+    background-color: rgba(233, 30, 99, 0.5);
+}
+
+/* Dark mode variations */
+[data-theme="dark"] .highlight-yellow {
+    background-color: rgba(255, 235, 59, 0.25);
+}
+
+[data-theme="dark"] .highlight-yellow:hover {
+    background-color: rgba(255, 235, 59, 0.35);
+}
+
+[data-theme="dark"] .highlight-green {
+    background-color: rgba(76, 175, 80, 0.2);
+}
+
+[data-theme="dark"] .highlight-green:hover {
+    background-color: rgba(76, 175, 80, 0.3);
+}
+
+[data-theme="dark"] .highlight-blue {
+    background-color: rgba(33, 150, 243, 0.2);
+}
+
+[data-theme="dark"] .highlight-blue:hover {
+    background-color: rgba(33, 150, 243, 0.3);
+}
+
+[data-theme="dark"] .highlight-pink {
+    background-color: rgba(233, 30, 99, 0.2);
+}
+
+[data-theme="dark"] .highlight-pink:hover {
+    background-color: rgba(233, 30, 99, 0.3);
+}
+
+/* Color Picker Popup */
+.highlight-color-picker {
+    position: absolute;
+    background-color: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    padding: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    animation: fadeInUp 0.2s ease;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.color-picker-title {
+    font-size: 12px;
+    color: var(--color-text-muted);
+    margin-bottom: 8px;
+    text-align: center;
+    font-weight: 500;
+}
+
+.color-picker-options {
+    display: flex;
+    gap: 8px;
+}
+
+.color-option {
+    width: 40px;
+    height: 40px;
+    border: 2px solid var(--color-border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.color-option:hover {
+    transform: scale(1.1);
+    border-color: var(--color-text);
+}
+
+.color-option-check {
+    display: none;
+    color: #333;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.color-option:hover .color-option-check {
+    display: block;
+}
+
+/* Highlight item color indicator */
+.highlight-color-indicator {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    border-radius: 6px 0 0 6px;
+}
+
+.highlight-item {
+    position: relative;
+    padding-left: 16px;
+}
+
 /* ===================================
    RESPONSIVE DESIGN
    =================================== */
