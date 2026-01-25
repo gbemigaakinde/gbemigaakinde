@@ -684,39 +684,139 @@ function initHighlighting(postId) {
     // Update the highlights list
     updateHighlightsList(postId);
     
-    // Handle text selection
-    postContent.addEventListener('mouseup', (e) => {
-        // Small delay to ensure selection is complete
+    // Show color picker when text is selected
+    let colorPicker = null;
+    
+    postContent.addEventListener('mouseup', handleTextSelection);
+    postContent.addEventListener('touchend', handleTextSelection);
+    
+    function handleTextSelection(e) {
+        // Remove existing color picker
+        if (colorPicker) {
+            colorPicker.remove();
+            colorPicker = null;
+        }
+        
         setTimeout(() => {
             const selection = window.getSelection();
             const selectedText = selection.toString().trim();
             
-            // Only process if there's actually selected text
             if (selectedText.length > 0 && selection.rangeCount > 0) {
                 const range = selection.getRangeAt(0);
                 
-                // Make sure the selection is within the post content
+                // Make sure selection is within post content
                 if (postContent.contains(range.commonAncestorContainer)) {
-                    // Create unique ID for this highlight
-                    const highlightId = 'highlight-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
-                    
-                    // Wrap the selection
-                    const success = wrapSelectionWithId(selection, highlightId);
-                    
-                    if (success) {
-                        // Save the highlight data
-                        saveHighlight(postId, selectedText, highlightId);
-                        
-                        // Update the highlights list
-                        updateHighlightsList(postId);
+                    // Check if already highlighted
+                    let node = range.commonAncestorContainer;
+                    while (node && node !== postContent) {
+                        if (node.nodeType === 1 && node.classList && node.classList.contains('highlight')) {
+                            selection.removeAllRanges();
+                            return;
+                        }
+                        node = node.parentNode;
                     }
                     
-                    // Clear the selection
-                    selection.removeAllRanges();
+                    // Show color picker
+                    showColorPicker(e, selection, postId);
                 }
             }
         }, 10);
-    });
+    }
+    
+    function showColorPicker(event, selection, postId) {
+        colorPicker = document.createElement('div');
+        colorPicker.className = 'highlight-color-picker';
+        
+        const colors = [
+            { name: 'Yellow', value: 'yellow', bg: 'rgba(255, 235, 59, 0.4)' },
+            { name: 'Green', value: 'green', bg: 'rgba(76, 175, 80, 0.3)' },
+            { name: 'Blue', value: 'blue', bg: 'rgba(33, 150, 243, 0.3)' },
+            { name: 'Pink', value: 'pink', bg: 'rgba(233, 30, 99, 0.3)' }
+        ];
+        
+        colorPicker.innerHTML = `
+            <div class="color-picker-title">Highlight color:</div>
+            <div class="color-picker-options">
+                ${colors.map(color => `
+                    <button class="color-option" data-color="${color.value}" style="background: ${color.bg};" title="${color.name}">
+                        <span class="color-option-check">✓</span>
+                    </button>
+                `).join('')}
+            </div>
+        `;
+        
+        document.body.appendChild(colorPicker);
+        
+        // Position the picker near the selection
+        const rect = selection.getRangeAt(0).getBoundingClientRect();
+        const pickerRect = colorPicker.getBoundingClientRect();
+        
+        let top = rect.bottom + window.scrollY + 8;
+        let left = rect.left + window.scrollX + (rect.width / 2) - (pickerRect.width / 2);
+        
+        // Keep picker on screen
+        if (left + pickerRect.width > window.innerWidth) {
+            left = window.innerWidth - pickerRect.width - 16;
+        }
+        if (left < 16) {
+            left = 16;
+        }
+        
+        colorPicker.style.top = top + 'px';
+        colorPicker.style.left = left + 'px';
+        
+        // Handle color selection
+        colorPicker.querySelectorAll('.color-option').forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const color = button.dataset.color;
+                applyHighlight(selection, color, postId);
+                colorPicker.remove();
+                colorPicker = null;
+            });
+        });
+        
+        // Close picker when clicking outside
+        setTimeout(() => {
+            document.addEventListener('click', function closePickerHandler(e) {
+                if (colorPicker && !colorPicker.contains(e.target)) {
+                    colorPicker.remove();
+                    colorPicker = null;
+                    document.removeEventListener('click', closePickerHandler);
+                }
+            });
+        }, 100);
+    }
+    
+    function applyHighlight(selection, color, postId) {
+        if (selection.rangeCount === 0) return;
+        
+        const range = selection.getRangeAt(0);
+        const selectedText = selection.toString().trim();
+        
+        const highlightId = 'highlight-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+        
+        try {
+            const span = document.createElement('span');
+            span.className = 'highlight highlight-' + color;
+            span.setAttribute('data-highlight-id', highlightId);
+            span.setAttribute('data-color', color);
+            
+            const contents = range.extractContents();
+            span.appendChild(contents);
+            range.insertNode(span);
+            
+            // Save highlight
+            saveHighlight(postId, selectedText, highlightId, color);
+            updateHighlightsList(postId);
+            
+            // Clear selection
+            selection.removeAllRanges();
+            
+        } catch (e) {
+            console.log('Could not create highlight:', e);
+        }
+    }
     
     // Clear all highlights button
     if (clearHighlightsBtn) {
@@ -726,44 +826,13 @@ function initHighlighting(postId) {
     }
 }
 
-function wrapSelectionWithId(selection, highlightId) {
-    if (selection.rangeCount === 0) return false;
-    
-    try {
-        const range = selection.getRangeAt(0);
-        
-        // Check if selection is already inside a highlight
-        let node = range.commonAncestorContainer;
-        while (node && node.nodeType !== 1) {
-            node = node.parentNode;
-        }
-        if (node && node.classList && node.classList.contains('highlight')) {
-            return false; // Don't highlight already highlighted text
-        }
-        
-        const span = document.createElement('span');
-        span.className = 'highlight';
-        span.setAttribute('data-highlight-id', highlightId);
-        
-        // Extract and wrap the contents
-        const contents = range.extractContents();
-        span.appendChild(contents);
-        range.insertNode(span);
-        
-        return true;
-    } catch (e) {
-        console.log('Could not create highlight:', e);
-        return false;
-    }
-}
-
-function saveHighlight(postId, text, highlightId) {
+function saveHighlight(postId, text, highlightId, color) {
     const highlights = getHighlightsForPost(postId);
     
-    // Add new highlight with ID
     highlights.push({
         text: text,
         id: highlightId,
+        color: color || 'yellow',
         timestamp: Date.now()
     });
     
@@ -781,69 +850,71 @@ function restoreSavedHighlights(postId) {
     
     if (!postContent || highlights.length === 0) return;
     
-    // Get all text content
-    const walker = document.createTreeWalker(
-        postContent,
-        NodeFilter.SHOW_TEXT,
-        null,
-        false
-    );
-    
-    const textNodes = [];
-    let node;
-    while (node = walker.nextNode()) {
-        // Skip text nodes that are already inside highlights
-        let parent = node.parentNode;
-        let isInHighlight = false;
-        while (parent && parent !== postContent) {
-            if (parent.classList && parent.classList.contains('highlight')) {
-                isInHighlight = true;
-                break;
-            }
-            parent = parent.parentNode;
-        }
-        if (!isInHighlight) {
-            textNodes.push(node);
-        }
-    }
-    
-    // Restore each saved highlight
     highlights.forEach(highlight => {
-        const searchText = highlight.text;
         const highlightId = highlight.id;
+        const color = highlight.color || 'yellow';
         
-        // Skip if this highlight already exists in the DOM
+        // Skip if already exists
         if (document.querySelector(`[data-highlight-id="${highlightId}"]`)) {
             return;
         }
         
         // Try to find and highlight the text
-        for (let i = 0; i < textNodes.length; i++) {
-            const textNode = textNodes[i];
-            const textContent = textNode.textContent;
-            const index = textContent.indexOf(searchText);
-            
-            if (index !== -1) {
-                try {
-                    const range = document.createRange();
-                    range.setStart(textNode, index);
-                    range.setEnd(textNode, index + searchText.length);
-                    
-                    const span = document.createElement('span');
-                    span.className = 'highlight';
-                    span.setAttribute('data-highlight-id', highlightId);
-                    
-                    const contents = range.extractContents();
-                    span.appendChild(contents);
-                    range.insertNode(span);
-                    
-                    break; // Found and highlighted, move to next highlight
-                } catch (e) {
-                    console.log('Could not restore highlight:', e);
+        findAndHighlightText(postContent, highlight.text, highlightId, color);
+    });
+}
+
+function findAndHighlightText(container, searchText, highlightId, color) {
+    const walker = document.createTreeWalker(
+        container,
+        NodeFilter.SHOW_TEXT,
+        {
+            acceptNode: function(node) {
+                // Skip if inside existing highlight
+                let parent = node.parentNode;
+                while (parent && parent !== container) {
+                    if (parent.classList && parent.classList.contains('highlight')) {
+                        return NodeFilter.FILTER_REJECT;
+                    }
+                    parent = parent.parentNode;
                 }
+                return NodeFilter.FILTER_ACCEPT;
             }
         }
-    });
+    );
+    
+    const textNodes = [];
+    let node;
+    while (node = walker.nextNode()) {
+        textNodes.push(node);
+    }
+    
+    for (let i = 0; i < textNodes.length; i++) {
+        const textNode = textNodes[i];
+        const textContent = textNode.textContent;
+        const index = textContent.indexOf(searchText);
+        
+        if (index !== -1) {
+            try {
+                const range = document.createRange();
+                range.setStart(textNode, index);
+                range.setEnd(textNode, index + searchText.length);
+                
+                const span = document.createElement('span');
+                span.className = 'highlight highlight-' + color;
+                span.setAttribute('data-highlight-id', highlightId);
+                span.setAttribute('data-color', color);
+                
+                const contents = range.extractContents();
+                span.appendChild(contents);
+                range.insertNode(span);
+                
+                break;
+            } catch (e) {
+                console.log('Could not restore highlight:', e);
+            }
+        }
+    }
 }
 
 function updateHighlightsList(postId) {
@@ -857,11 +928,18 @@ function updateHighlightsList(postId) {
         return;
     }
     
-    // Sort by timestamp (newest first)
     highlights.sort((a, b) => b.timestamp - a.timestamp);
     
-    highlightsList.innerHTML = highlights.map((highlight, index) => `
-        <div class="highlight-item" onclick="scrollToHighlight('${highlight.id}')" style="cursor: pointer;">
+    const colorMap = {
+        'yellow': 'rgba(255, 235, 59, 0.4)',
+        'green': 'rgba(76, 175, 80, 0.3)',
+        'blue': 'rgba(33, 150, 243, 0.3)',
+        'pink': 'rgba(233, 30, 99, 0.3)'
+    };
+    
+    highlightsList.innerHTML = highlights.map((highlight) => `
+        <div class="highlight-item" onclick="scrollToHighlight('${highlight.id}')" style="cursor: pointer; border-left-color: ${colorMap[highlight.color] || colorMap.yellow};">
+            <div class="highlight-color-indicator" style="background: ${colorMap[highlight.color] || colorMap.yellow};"></div>
             <div class="highlight-item-text">"${highlight.text}"</div>
             <div class="highlight-item-actions">
                 <button class="highlight-remove-btn" onclick="event.stopPropagation(); removeHighlight(${postId}, '${highlight.id}')">
@@ -875,27 +953,24 @@ function updateHighlightsList(postId) {
 function scrollToHighlight(highlightId) {
     const element = document.querySelector(`[data-highlight-id="${highlightId}"]`);
     if (element) {
-        // Scroll to the highlight with smooth animation
         element.scrollIntoView({ 
             behavior: 'smooth', 
             block: 'center' 
         });
         
-        // Add a temporary flash effect
+        const originalBg = element.style.backgroundColor;
         element.style.backgroundColor = 'rgba(255, 235, 59, 0.8)';
         setTimeout(() => {
-            element.style.backgroundColor = '';
+            element.style.backgroundColor = originalBg;
         }, 1000);
     }
 }
 
 function removeHighlight(postId, highlightId) {
-    // Remove from storage
     let highlights = getHighlightsForPost(postId);
     highlights = highlights.filter(h => h.id !== highlightId);
     localStorage.setItem(`highlights-post-${postId}`, JSON.stringify(highlights));
     
-    // Remove from DOM
     const element = document.querySelector(`[data-highlight-id="${highlightId}"]`);
     if (element) {
         const parent = element.parentNode;
@@ -906,15 +981,12 @@ function removeHighlight(postId, highlightId) {
         parent.normalize();
     }
     
-    // Update list
     updateHighlightsList(postId);
 }
 
 function clearAllHighlights(postId) {
-    // Remove from storage
     localStorage.removeItem(`highlights-post-${postId}`);
     
-    // Remove all visual highlights from the page
     const postContent = document.getElementById('post-content');
     if (postContent) {
         const highlightedElements = postContent.querySelectorAll('.highlight');
@@ -928,11 +1000,9 @@ function clearAllHighlights(postId) {
         });
     }
     
-    // Update the highlights list
     updateHighlightsList(postId);
 }
 
-// Make functions available globally
 window.removeHighlight = removeHighlight;
 window.scrollToHighlight = scrollToHighlight;
 
