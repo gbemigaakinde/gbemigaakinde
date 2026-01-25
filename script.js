@@ -597,7 +597,21 @@ function displaySinglePost() {
 function updateMetaTags(post) {
     const baseUrl = 'https://gbemigaakinde.vercel.app';
     const postUrl = `${baseUrl}/post.html?id=${post.id}`;
-    const imageUrl = post.image ? `${baseUrl}/${post.image}` : `${baseUrl}/gbemiga.png`;
+    
+    // Use the post's image if it exists, otherwise use the default
+    let imageUrl;
+    if (post.image) {
+        // Check if the image path already starts with http:// or https://
+        if (post.image.startsWith('http://') || post.image.startsWith('https://')) {
+            imageUrl = post.image;
+        } else {
+            // If it's a relative path, add the base URL
+            imageUrl = `${baseUrl}/${post.image}`;
+        }
+    } else {
+        // Fallback to default image
+        imageUrl = `${baseUrl}/gbemiga.png`;
+    }
     
     // Get the first 160 characters of excerpt for description
     const description = post.excerpt.length > 160 
