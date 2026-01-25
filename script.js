@@ -485,8 +485,16 @@ function displaySinglePost() {
     
     if (!postHeader || !postContent) return;
     
-    const urlParams = new URLSearchParams(window.location.search);
-    const postId = parseInt(urlParams.get('id'));
+    // Extract post ID from filename (e.g., post-1.html -> 1)
+    const filename = window.location.pathname.split('/').pop();
+    const match = filename.match(/post-(\d+)\.html/);
+    
+    if (!match) {
+        postHeader.innerHTML = '<p style="color: var(--color-text-muted);">Post not found.</p>';
+        return;
+    }
+    
+    const postId = parseInt(match[1]);
     const post = posts.find(p => p.id === postId);
     
     if (!post) {
