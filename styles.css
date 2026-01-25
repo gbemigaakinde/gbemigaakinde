@@ -1124,57 +1124,90 @@ a:hover {
     background-color: rgba(233, 30, 99, 0.3);
 }
 
-/* Color Picker Popup - Mobile Optimized */
+/* Color Picker Popup - Elegant & Compact */
 .highlight-color-picker {
     position: absolute;
     background-color: var(--color-bg);
-    border: 2px solid var(--color-border);
-    border-radius: 12px;
-    padding: 16px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--color-border);
+    border-radius: 20px;
+    padding: 8px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
     z-index: 9999;
-    min-width: 280px;
+    animation: fadeInScale 0.2s ease;
+}
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
 .color-picker-title {
-    font-size: 14px;
-    color: var(--color-text);
-    margin-bottom: 12px;
-    text-align: center;
-    font-weight: 500;
+    display: none; /* Hide title for cleaner look */
 }
 
 .color-picker-options {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
+    display: flex;
+    gap: 6px;
+    align-items: center;
 }
 
 .color-option {
-    padding: 14px 10px;
-    border: 2px solid var(--color-border);
-    border-radius: 8px;
+    width: 36px;
+    height: 36px;
+    border: 2px solid transparent;
+    border-radius: 50%;
     cursor: pointer;
     transition: all 0.2s ease;
-    font-size: 14px;
-    font-family: inherit;
-    color: var(--color-text);
-    font-weight: 500;
-    text-align: center;
+    font-size: 0;
+    padding: 0;
+    position: relative;
     -webkit-tap-highlight-color: transparent;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .color-option:active {
-    transform: scale(0.95);
-    border-color: var(--color-text);
+    transform: scale(0.85);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.color-option::after {
+    content: '';
+    position: absolute;
+    inset: 3px;
+    border-radius: 50%;
+    background: inherit;
+}
+
+/* Hover effect for desktop */
+@media (hover: hover) {
+    .color-option:hover {
+        transform: scale(1.15);
+        border-color: var(--color-text);
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+    }
 }
 
 .color-option-name {
-    display: block;
+    display: none;
 }
 
 .color-option-check {
     display: none;
+}
+
+/* Darker borders in dark mode */
+[data-theme="dark"] .highlight-color-picker {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="dark"] .color-option {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 /* Highlight item color indicator */
