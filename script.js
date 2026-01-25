@@ -633,39 +633,40 @@ function initNotepad(postId) {
     }
     
     // Copy all notes and highlights
-    if (copyNotesBtn) {
-        copyNotesBtn.addEventListener('click', () => {
-            const notes = notepadTextarea ? notepadTextarea.value : '';
-            const highlights = getHighlightsForPost(postId);
-            
-            let textToCopy = '';
-            
-            if (notes.trim()) {
-                textToCopy += `NOTES:\n${notes}\n\n`;
-            }
-            
-            if (highlights.length > 0) {
-                textToCopy += `HIGHLIGHTS:\n`;
-                highlights.forEach((highlight, index) => {
-                    textToCopy += `${index + 1}. ${highlight}\n`;
-                });
-            }
-            
-            if (textToCopy.trim()) {
-                navigator.clipboard.writeText(textToCopy).then(() => {
-                    const originalText = copyNotesBtn.innerHTML;
-                    copyNotesBtn.innerHTML = '<i data-lucide="check" style="width: 16px; height: 16px;"></i> Copied!';
-                    
-                    setTimeout(() => {
-                        copyNotesBtn.innerHTML = originalText;
-                        initLucideIcons();
-                    }, 2000);
-                    
+if (copyNotesBtn) {
+    copyNotesBtn.addEventListener('click', () => {
+        const notes = notepadTextarea ? notepadTextarea.value : '';
+        const highlights = getHighlightsForPost(postId);
+        
+        let textToCopy = '';
+        
+        if (notes.trim()) {
+            textToCopy += `NOTES:\n${notes}\n\n`;
+        }
+        
+        if (highlights.length > 0) {
+            textToCopy += `HIGHLIGHTS:\n`;
+            highlights.forEach((highlight, index) => {
+                textToCopy += `${index + 1}. ${highlight.text}\n`;
+            });
+        }
+        
+        if (textToCopy.trim()) {
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                const originalHTML = copyNotesBtn.innerHTML;
+                copyNotesBtn.innerHTML = '<i data-lucide="check" style="width: 16px; height: 16px;"></i> Copied!';
+                initLucideIcons();
+                
+                setTimeout(() => {
+                    copyNotesBtn.innerHTML = originalHTML;
                     initLucideIcons();
-                });
-            }
-        });
-    }
+                }, 2000);
+            }).catch(err => {
+                console.log('Copy failed:', err);
+            });
+        }
+    });
+}
 }
 
 // ===================================
