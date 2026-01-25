@@ -382,7 +382,7 @@ function displayPosts(postsToShow = posts) {
                         ${tagsHTML}
                     </div>
                     
-                    <a href="post.html?id=${post.id}" class="read-more">
+                    <a href="post-${post.id}.html" class="read-more">
                         Read more
                         <i data-lucide="arrow-right" style="width: 16px; height: 16px;"></i>
                     </a>
@@ -497,9 +497,6 @@ function displaySinglePost() {
     // Update page title
     document.title = `${post.title} - 'Gbemiga Akinde`;
     
-    // Update Open Graph and Twitter meta tags for this specific post
-    updateMetaTags(post);
-    
     const date = new Date(post.date);
     const formattedDate = date.toLocaleDateString('en-US', { 
         month: 'long', 
@@ -565,7 +562,7 @@ function displaySinglePost() {
                 });
                 
                 return `
-                    <a href="post.html?id=${relatedPost.id}" class="related-post-card">
+                    <a href="post-${relatedPost.id}.html" class="related-post-card">
                         ${relatedPost.image ? `<img src="${relatedPost.image}" alt="${relatedPost.title}" class="related-post-image">` : ''}
                         <div class="related-post-content">
                             <span class="related-post-category">${relatedPost.category}</span>
@@ -588,63 +585,6 @@ function displaySinglePost() {
     initLucideIcons();
     initNotepad(postId);
     initHighlighting(postId);
-}
-
-// ===================================
-// UPDATE META TAGS FOR SOCIAL SHARING
-// ===================================
-
-function updateMetaTags(post) {
-    const baseUrl = 'https://gbemigaakinde.vercel.app';
-    const postUrl = `${baseUrl}/post.html?id=${post.id}`;
-    
-    // Use the post's image if it exists, otherwise use the default
-    let imageUrl;
-    if (post.image) {
-        // Check if the image path already starts with http:// or https://
-        if (post.image.startsWith('http://') || post.image.startsWith('https://')) {
-            imageUrl = post.image;
-        } else {
-            // If it's a relative path, add the base URL
-            imageUrl = `${baseUrl}/${post.image}`;
-        }
-    } else {
-        // Fallback to default image
-        imageUrl = `${baseUrl}/gbemiga.png`;
-    }
-    
-    // Get the first 160 characters of excerpt for description
-    const description = post.excerpt.length > 160 
-        ? post.excerpt.substring(0, 157) + '...' 
-        : post.excerpt;
-    
-    // Update Open Graph tags
-    updateOrCreateMetaTag('property', 'og:title', post.title);
-    updateOrCreateMetaTag('property', 'og:description', description);
-    updateOrCreateMetaTag('property', 'og:url', postUrl);
-    updateOrCreateMetaTag('property', 'og:image', imageUrl);
-    updateOrCreateMetaTag('property', 'og:type', 'article');
-    
-    // Update Twitter Card tags
-    updateOrCreateMetaTag('name', 'twitter:title', post.title);
-    updateOrCreateMetaTag('name', 'twitter:description', description);
-    updateOrCreateMetaTag('name', 'twitter:image', imageUrl);
-    
-    // Update standard meta description
-    updateOrCreateMetaTag('name', 'description', description);
-}
-
-function updateOrCreateMetaTag(attribute, attributeValue, content) {
-    let tag = document.querySelector(`meta[${attribute}="${attributeValue}"]`);
-    
-    if (tag) {
-        tag.setAttribute('content', content);
-    } else {
-        tag = document.createElement('meta');
-        tag.setAttribute(attribute, attributeValue);
-        tag.setAttribute('content', content);
-        document.head.appendChild(tag);
-    }
 }
 
 // ===================================
