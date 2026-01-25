@@ -674,13 +674,12 @@ function initNotepad(postId) {
 
 function initHighlighting(postId) {
     const postContent = document.getElementById('post-content');
-    const highlightsList = document.getElementById('highlights-list');
     const clearHighlightsBtn = document.getElementById('clear-highlights');
     
     if (!postContent) return;
     
-    // Load existing highlights
-    loadHighlights(postId);
+    // Update the highlights list on load
+    updateHighlightsList(postId);
     
     // Handle text selection
     postContent.addEventListener('mouseup', () => {
@@ -688,14 +687,21 @@ function initHighlighting(postId) {
         const selectedText = selection.toString().trim();
         
         if (selectedText.length > 0) {
+            // Save the highlight
             saveHighlight(postId, selectedText);
+            
+            // Wrap the selection visually
             wrapSelection(selection);
+            
+            // Update the highlights list
             updateHighlightsList(postId);
+            
+            // Clear the selection
             selection.removeAllRanges();
         }
     });
     
-    // Clear all highlights
+    // Clear all highlights button
     if (clearHighlightsBtn) {
         clearHighlightsBtn.addEventListener('click', () => {
             clearAllHighlights(postId);
@@ -719,25 +725,22 @@ function getHighlightsForPost(postId) {
 }
 
 function wrapSelection(selection) {
-    if (selection.rangeCount > 0) {
+    if (selection.rangeCount === 0) return;
+    
+    try {
         const range = selection.getRangeAt(0);
         const span = document.createElement('span');
         span.className = 'highlight';
         
-        try {
-            range.surroundContents(span);
-        } catch (e) {
-            // If surroundContents fails (e.g., selection spans multiple elements),
-            // just highlight what we can
-            console.log('Could not wrap selection');
-        }
+        // Clone the range contents
+        const contents = range.extractContents();
+        span.appendChild(contents);
+        
+        // Insert the wrapped content
+        range.insertNode(span);
+    } catch (e) {
+        console.log('Could not highlight selection:', e);
     }
-}
-
-function loadHighlights(postId) {
-    // Highlights are visually shown when user creates them
-    // This function ensures the list is up to date
-    updateHighlightsList(postId);
 }
 
 function updateHighlightsList(postId) {
@@ -774,20 +777,25 @@ function clearAllHighlights(postId) {
     // Remove from storage
     localStorage.removeItem(`highlights-post-${postId}`);
     
-    // Remove visual highlights
+    // Remove visual highlights from the page
     const postContent = document.getElementById('post-content');
     if (postContent) {
         const highlightedElements = postContent.querySelectorAll('.highlight');
         highlightedElements.forEach(el => {
             const parent = el.parentNode;
+            // Move all child nodes out of the highlight span
             while (el.firstChild) {
                 parent.insertBefore(el.firstChild, el);
             }
+            // Remove the empty highlight span
             parent.removeChild(el);
+            
+            // Normalize the parent to merge adjacent text nodes
+            parent.normalize();
         });
     }
     
-    // Update list
+    // Update the highlights list
     updateHighlightsList(postId);
 }
 
