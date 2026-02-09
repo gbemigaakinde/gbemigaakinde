@@ -25,10 +25,9 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@300;400&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="flipbook.css">
     
     <!-- Google Analytics - Replace YOUR_MEASUREMENT_ID with your actual ID -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=YOUR_MEASUREMENT_ID"></script>
@@ -82,86 +81,81 @@
         </div>
     </div>
 
-    <!-- ================================================
-         FLIP BOOK READING EXPERIENCE
-         This replaces the old scrolling <main>.
-         The header data (image, title, meta) is still
-         rendered by displaySinglePost() into #post-header-data,
-         then the flip system paginates #post-content.
-         ================================================ -->
-    <main class="book-main" id="book-main">
+    <!-- Main Content -->
+    <main class="main-content">
+        <article class="content-narrow">
+            <!-- Back Button -->
+            <a href="index.html" class="back-link">
+                ← Back to all posts
+            </a>
 
-        <!-- Back link: visible above the book -->
-        <a href="index.html" class="back-link book-back-link">← Back to all posts</a>
-
-        <!-- Hidden container: displaySinglePost() renders here first,
-             then the flip system reads from it and distributes into pages -->
-        <div id="post-header" class="book-offscreen" aria-hidden="true"></div>
-        <div id="post-content" class="prose book-offscreen" aria-hidden="true"></div>
-        <div id="related-posts" class="book-offscreen" aria-hidden="true"></div>
-
-        <!-- The visible book structure -->
-        <div class="book-wrapper" id="book-wrapper">
-
-            <!-- Page number announcement for screen readers -->
-            <div id="book-announcer" class="book-announcer" aria-live="polite" aria-atomic="true"></div>
-
-            <!-- The book: two visible pages side by side (desktop) or single page (mobile) -->
-            <div class="book-container" id="book-container" role="region" aria-label="Book reader">
-
-                <!-- Left page (already-read page, static) -->
-                <div class="book-page book-page-left" id="book-page-left">
-                    <div class="book-page-inner">
-                        <div class="book-page-content" id="page-left-content"></div>
-                    </div>
-                </div>
-
-                <!-- Right page (current reading page) -->
-                <div class="book-page book-page-right" id="book-page-right">
-                    <div class="book-page-inner">
-                        <div class="book-page-content" id="page-right-content"></div>
-                    </div>
-                </div>
-
-                <!-- Flipping page (animated, cloned during turn) -->
-                <div class="book-page book-page-flip" id="book-page-flip" aria-hidden="true">
-                    <div class="book-page-inner">
-                        <div class="book-page-content book-page-flip-front" id="page-flip-front"></div>
-                        <div class="book-page-content book-page-flip-back" id="page-flip-back"></div>
-                    </div>
-                </div>
-
-                <!-- Spine shadow (subtle center line) -->
-                <div class="book-spine" aria-hidden="true"></div>
+            <!-- Post Header (populated by JavaScript) -->
+            <div id="post-header" class="post-header">
+                <!-- Date, category, title, tags, and share button will be inserted here -->
             </div>
 
-            <!-- Navigation: left arrow -->
-            <button class="book-nav book-nav-prev" id="book-nav-prev" aria-label="Previous page">
-                <i data-lucide="chevron-left" style="width:22px;height:22px;"></i>
-            </button>
-
-            <!-- Navigation: right arrow -->
-            <button class="book-nav book-nav-next" id="book-nav-next" aria-label="Next page">
-                <i data-lucide="chevron-right" style="width:22px;height:22px;"></i>
-            </button>
-
-            <!-- Page counter at the bottom -->
-            <div class="book-footer" id="book-footer">
-                <span class="book-page-counter" id="book-page-counter">Page 1 of 1</span>
+            <!-- Post Content (populated by JavaScript) -->
+            <div id="post-content" class="prose">
+                <!-- Post body will be inserted here -->
+            </div>
+            
+            <!-- Related Posts (populated by JavaScript) -->
+            <div id="related-posts">
+                <!-- Related posts will be inserted here -->
+            </div>
+        </article>
+        
+        <!-- Floating Notepad Button -->
+        <button id="notepad-toggle" class="notepad-toggle" aria-label="Toggle notepad">
+            <i data-lucide="sticky-note" class="icon"></i>
+        </button>
+        
+        <!-- Notepad Panel -->
+        <div id="notepad-panel" class="notepad-panel">
+            <div class="notepad-header">
+                <h3 class="notepad-title">My Notes</h3>
+                <button id="close-notepad" class="icon-button" aria-label="Close notepad">
+                    <i data-lucide="x" class="icon"></i>
+                </button>
+            </div>
+            
+            <div class="notepad-content">
+                <div class="notepad-section">
+                    <h4 class="notepad-section-title">Personal Notes</h4>
+                    <textarea 
+                        id="notepad-textarea" 
+                        class="notepad-textarea" 
+                        placeholder="Write your thoughts here..."
+                    ></textarea>
+                </div>
+                
+                <div class="notepad-section">
+                    <h4 class="notepad-section-title">
+                        Highlights
+                        <button id="clear-highlights" class="clear-highlights-btn">
+                            Clear all
+                        </button>
+                    </h4>
+                    <div id="highlights-list" class="highlights-list">
+                        <p class="highlights-empty">Select text in the post to highlight it</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="notepad-footer">
+                <button id="copy-notes" class="notepad-button">
+                    <i data-lucide="copy" style="width: 16px; height: 16px;"></i>
+                    Copy All
+                </button>
             </div>
         </div>
-
-        <!-- Related posts: rendered after the book ends -->
-        <div id="related-posts-target" class="book-related"></div>
-
-        <!-- Share button: rendered after related posts -->
-        <div class="book-share-wrap" id="book-share-wrap"></div>
     </main>
 
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
             <div class="footer-content">
+                <!-- About Section -->
                 <div class="footer-about">
                     <h3 class="footer-title">About</h3>
                     <p class="footer-text">
@@ -169,6 +163,7 @@
                     </p>
                 </div>
                 
+                <!-- Contact Section -->
                 <div class="footer-contact">
                     <h3 class="footer-title">Contact</h3>
                     <p class="footer-text">
@@ -179,6 +174,7 @@
                     </p>
                 </div>
                 
+                <!-- Social Media Links -->
                 <div class="footer-social">
                     <h3 class="footer-title">Connect</h3>
                     <div class="social-links">
@@ -192,65 +188,21 @@
                 </div>
             </div>
             
+            <!-- Copyright (auto-updates year) -->
             <div class="footer-bottom">
                 <p class="footer-copyright" id="copyright-text">&copy; 2026 'Gbemiga Akinde. All thoughts and words are my own.</p>
             </div>
         </div>
     </footer>
 
-    <!-- Notepad (kept exactly as original — works on #post-content) -->
-    <button id="notepad-toggle" class="notepad-toggle" aria-label="Toggle notepad">
-        <i data-lucide="sticky-note" class="icon"></i>
-    </button>
-    
-    <div id="notepad-panel" class="notepad-panel">
-        <div class="notepad-header">
-            <h3 class="notepad-title">My Notes</h3>
-            <button id="close-notepad" class="icon-button" aria-label="Close notepad">
-                <i data-lucide="x" class="icon"></i>
-            </button>
-        </div>
-        
-        <div class="notepad-content">
-            <div class="notepad-section">
-                <h4 class="notepad-section-title">Personal Notes</h4>
-                <textarea 
-                    id="notepad-textarea" 
-                    class="notepad-textarea" 
-                    placeholder="Write your thoughts here..."
-                ></textarea>
-            </div>
-            
-            <div class="notepad-section">
-                <h4 class="notepad-section-title">
-                    Highlights
-                    <button id="clear-highlights" class="clear-highlights-btn">
-                        Clear all
-                    </button>
-                </h4>
-                <div id="highlights-list" class="highlights-list">
-                    <p class="highlights-empty">Select text in the post to highlight it</p>
-                </div>
-            </div>
-        </div>
-        
-        <div class="notepad-footer">
-            <button id="copy-notes" class="notepad-button">
-                <i data-lucide="copy" style="width: 16px; height: 16px;"></i>
-                Copy All
-            </button>
-        </div>
-    </div>
-
-    <!-- Lucide Icons -->
+    <!-- Load Lucide Icons Library -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <script>
+        // Initialize lucide icons as soon as library loads
         lucide.createIcons();
     </script>
     
-    <!-- Main script (existing) -->
+    <!-- Load main script -->
     <script src="script.js"></script>
-    <!-- Flip book script (new, runs after script.js) -->
-    <script src="flipbook.js"></script>
 </body>
 </html>
